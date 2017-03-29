@@ -12,8 +12,8 @@
 
 // Constants
 #define squareWidth 500
-#define degrees90C 190
-#define degrees90A 150 
+#define degrees90C 202
+#define degrees90A 188 
 
 
 // Global variables
@@ -44,19 +44,39 @@ attachInterrupt(digitalPinToInterrupt(encoderRB), encoderRBCounter, RISING);
 attachInterrupt(digitalPinToInterrupt(encoderRG), encoderRGCounter, RISING);
 
 //Serial.println("Setup done");
+delay(1000);
+forward(2);
+delay(250);
+antiClockwise90(2);
+delay(250);
+forward(1);
+delay(250);
+antiClockwise90(1);
+delay(250);
+forward(1);
+delay(250);
+clockwise90(1);
+delay(250);
+forward(1);
+delay(250);
+clockwise90(1);
+delay(250);
+forward(1);
+delay(250);
+antiClockwise90(2);
+delay(250);
+forward(1);
+delay(250);
+clockwise90(1);
+delay(250);
+forward(1);
+delay(250);
 }
 
 void loop() 
 {
 
-delay(1000);
-forward(1);
-delay(1000);
-antiClockwise90(2);
-delay(1000);
-forward(1);
-delay(1000);
-clockwise90(1);
+
 }
 
 void forward( int squares)
@@ -71,7 +91,7 @@ void forward( int squares)
 
   int distance = squareWidth * squares;
   
-  analogWrite(mL, 191);
+  analogWrite(mL, 193);
   analogWrite(mR, 191);
   digitalWrite(enableML, HIGH);
   digitalWrite(enableMR, HIGH);
@@ -113,7 +133,7 @@ void clockwise90( int turns)
   //Serial.println("clockwise start");
   
   
-  analogWrite(mL, 159);
+  analogWrite(mL, 161);
   analogWrite(mR, 95);
   digitalWrite(enableML, HIGH);
   digitalWrite(enableMR, HIGH);
@@ -151,7 +171,7 @@ void antiClockwise90( int turns)
   
   
   analogWrite(mL, 95);
-  analogWrite(mR, 159);
+  analogWrite(mR, 161);
   digitalWrite(enableML, HIGH);
   digitalWrite(enableMR, HIGH);
   //Serial.println(degreestoturn);
