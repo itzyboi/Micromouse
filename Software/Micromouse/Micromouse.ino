@@ -14,12 +14,13 @@ byte orientation = 0; // 0 = north, 1 = east, 2 = south, 3 = west
 
 void setup()
 {
-  
+ Serial.begin(9600);
 }
 
 void loop()
 {
-  
+  Serial.print("F: ");
+  Serial.println(analogRead(A1));
 }
 
 void DFA()   
