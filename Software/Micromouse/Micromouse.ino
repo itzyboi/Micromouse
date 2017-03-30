@@ -65,9 +65,12 @@ void forward( int squares)
   boolean flag1 = 1;
   boolean flag2 = 1;
   int distance = squareWidth * squares;
+  int difference = 0;
+  byte speedL = 195;
+  byte speedR = 191;
   
-  analogWrite(mL, 195);
-  analogWrite(mR, 191);
+  analogWrite(mL, speedL);
+  analogWrite(mR, speedR);
   encoderLBCount = 0;
   encoderLGCount = 0;
   encoderRBCount = 0;
@@ -77,6 +80,23 @@ void forward( int squares)
 
   while(flag1 | flag2)
   {
+    //code goes here
+    difference = encoderLBCount - encoderRBCount;
+    if(difference > 0)
+      {
+        if(difference > 60)
+          difference = 60;
+        speedL = 195 + difference;
+        digitalWrite(mL, speedL);
+      }
+    else if(difference < 0)
+      {
+        if(difference < -64)
+          difference = -64;
+        speedR = 191 - difference;
+        digitalWrite(mR, speedR);
+      }
+    
     if(encoderLBCount >= distance)
       {
         digitalWrite(enableML, LOW);
