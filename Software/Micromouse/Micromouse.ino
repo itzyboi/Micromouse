@@ -24,7 +24,6 @@ volatile boolean comparasonFlag = 1;
 
 void setup()
 {
-  Serial.begin(9600);
   pinMode(enableMR, OUTPUT);
   pinMode(enableML, OUTPUT);
   digitalWrite(enableML, LOW); // These go low so early to try to stop robot running away on startup
@@ -43,26 +42,15 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(encoderLG), encoderLGCounter, RISING);
   attachInterrupt(digitalPinToInterrupt(encoderRB), encoderRBCounter, RISING);
   attachInterrupt(digitalPinToInterrupt(encoderRG), encoderRGCounter, RISING);
-
-
-  delay(2000);
 }
 
 void loop()
 {
-  forward(2);
-  clockwise90(1);
-  forward(2);
-  antiClockwise90(2);
-  forward(2);
-  antiClockwise90(1);
-  forward(2);
-  clockwise90(2);
+
 }
 
 void forward( int squares)
 {
-  //Serial.println("Forward begin");
   // Travels forward x squares, x being int squares.
   byte i = 0;
   boolean flag1 = 1;
