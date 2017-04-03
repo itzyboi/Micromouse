@@ -251,3 +251,4 @@ void encoderRGCounter( void )
   encoderRGCount++;
   comparasonFlag = 0;
 }
+
