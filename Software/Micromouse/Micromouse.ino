@@ -70,7 +70,7 @@ void forward( int squares)
 
   for (i = 0; i < squares; i++)
   {
-    analogWrite(mL, 195);
+    analogWrite(mL, 194);
     analogWrite(mR, 191);
     encoderLBCount = 0;
     encoderLGCount = 0;
