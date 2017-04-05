@@ -5,10 +5,14 @@
 #define enableML 9// Left motor enable pin (High is on)
 #define enableMR 12 // Right motor enable pin (High is on)
 
-#define encoderLB 2 // Left motor encoder blue
-#define encoderLG 6 // Left motor encoder green
-#define encoderRB 3 // Right motor encoder blue
-#define encoderRG 7 // Right motor encoder green
+#define encoderLB 2 // Left motor encoder blue pin
+#define encoderLG 6 // Left motor encoder green pin
+#define encoderRB 3 // Right motor encoder blue pin
+#define encoderRG 7 // Right motor encoder green pin
+
+#define FIR A0 // Front IR sensor on ADC 0
+#define LIR A1 // Left IR sensor on ADC 1
+#define RIR A2 // Right IR sensor on ADC 2
 
 // Constants
 #define squareWidth 510
@@ -22,21 +26,21 @@
 
 // Global variables
 // Movement
-volatile int encoderLBCount = 0;
-volatile int encoderLGCount = 0;
-volatile int encoderRBCount = 0;
-volatile int encoderRGCount = 0;
-volatile boolean comparasonFlag = 1;
+volatile int encoderLBCount = 0; // Contains encoder value for left motor blue wired encoder 
+volatile int encoderLGCount = 0; // Contains encoder value for left motor green wired encoder 
+volatile int encoderRBCount = 0; // Contains encoder value for right motor blue wired encoder 
+volatile int encoderRGCount = 0; // Contains encoder value for right motor green wired encoder 
+volatile boolean comparisonFlag = 1; // flag used to check comparisons not interrupted
 
 // DFA
 byte stackPointer = 0;
-byte stack[36][2] = {0};
-boolean maze[8][8] = {0};
-byte edgeMatrix[8][8][4] = {0};
+byte stack[36][2] = {0}; // Stack for previously visited nodes
+boolean maze[8][8] = {0}; // visited matrix
+byte edgeMatrix[8][8][4] = {0}; // Matrix to hold wall values
 
-byte x = 1;
-byte y = 1;
-byte orientation = 0; // 0 = north, 1 = east, 2 = south, 3 = west
+byte x = 1; // x maze coordinate
+byte y = 1; // y maze coordinate
+byte orientation = 0; // Current orientation of the robot, 0 = north, 1 = east, 2 = south, 3 = west
 
 void setup()
 {
@@ -64,6 +68,7 @@ void loop()
 {
 
 }
+
 //DFA
 void DFA()
 {
@@ -124,27 +129,27 @@ void DFA()
 
     if(findX = -1)
       {
+        turn(north);
         orientation = north;
-        //turn(orientation);
-        //forward(1);
+        forward(1);
       }
     else if(findX = 1)
       {
+        turn(south);
         orientation = south;
-        //turn(orientation);
-        //forward(1);
+        forward(1);
       }
     else if(findY = -1)
       {
+        turn(east);
         orientation = east;
-        //turn(orientation);
-        //forward(1);
+        forward(1);
       }
     else if(findY = 1)
       {
+        turn(west);
         orientation = west;
-        //turn(orientation);
-        //forward(1);
+        forward(1);
       }  
   }
   
@@ -208,6 +213,34 @@ boolean rightSensor()
 }
 
 //Movement
+void turn( byte bearing) // bearing = 0(north),1(east),2(south),3(west)
+{
+  byte turns = orientation = bearing;
+  if(turns = 0)
+  {
+    return;
+  }
+  else if(turns == 3)
+  {
+    turns = -1;
+  }
+  else if(turns == -3)
+  {
+    turns = 1;
+  }
+  
+  if(turns > 0)
+  {
+    antiClockwise90(turns); 
+  }
+  else if(turns < 0)
+  {
+    clockwise90(turns);
+  }
+  return;
+}
+
+
 void forward( int squares)
 {
   // Travels forward x squares, x being int squares.
@@ -230,36 +263,36 @@ void forward( int squares)
     while (flag1 | flag2)
     {
       //code goes here
-      comparasonFlag = 1;
+      comparisonFlag = 1;
       if ((encoderLBCount >= squareWidth) && (flag1 == 1))
       {
-        if (comparasonFlag == 1)
+        if (comparisonFlag == 1)
         {
           digitalWrite(enableML, LOW);
           flag1 = 0;
         }
       }
-      comparasonFlag = 1;
+      comparisonFlag = 1;
       if ((encoderRBCount >= squareWidth) && (flag2 == 1))
       {
-        if (comparasonFlag == 1)
+        if (comparisonFlag == 1)
         {
           digitalWrite(enableMR, LOW);
           flag2 = 0;
         }
       }
-      comparasonFlag = 1;
+      comparisonFlag = 1;
       if ((encoderLBCount >= (squareWidth - 25)) && (flag1 == 1))
       {
-        if (comparasonFlag == 1)
+        if (comparisonFlag == 1)
         {
           analogWrite(mL, 155);
         }
       }
-      comparasonFlag = 1;
+      comparisonFlag = 1;
       if ((encoderRBCount >= (squareWidth - 25)) && (flag2 == 1))
       {
-        if (comparasonFlag == 1)
+        if (comparisonFlag == 1)
         {
           analogWrite(mR, 155);
         }
@@ -289,36 +322,36 @@ void clockwise90( int turns)
     digitalWrite(enableMR, HIGH);
     while (flag1 | flag2)
     {
-      comparasonFlag = 1;
+      comparisonFlag = 1;
       if ((encoderLBCount >= degrees90) && (flag1 == 1))
       {
-        if (comparasonFlag == 1)
+        if (comparisonFlag == 1)
         {
           digitalWrite(enableML, LOW);
           flag1 = 0;
         }
       }
-      comparasonFlag = 1;
+      comparisonFlag = 1;
       if ((encoderRBCount >= degrees90) && ( flag2 == 1))
       {
-        if (comparasonFlag == 1)
+        if (comparisonFlag == 1)
         {
           digitalWrite(enableMR, LOW);
           flag2 = 0;
         }
       }
-      comparasonFlag = 1;
+      comparisonFlag = 1;
       if ((encoderLBCount >= (degrees90 - 25)) && (flag1 == 1))
       {
-        if (comparasonFlag == 1)
+        if (comparisonFlag == 1)
         {
           analogWrite(mL, 155);
         }
       }
-      comparasonFlag = 1;
+      comparisonFlag = 1;
       if ((encoderRBCount >= (degrees90 - 25)) && (flag2 == 1))
       {
-        if (comparasonFlag == 1)
+        if (comparisonFlag == 1)
         {
           analogWrite(mR, 99);
         }
@@ -348,36 +381,36 @@ void antiClockwise90( int turns)
     digitalWrite(enableMR, HIGH);
     while (flag1 | flag2)
     {
-      comparasonFlag = 1;
+      comparisonFlag = 1;
       if ((encoderLBCount >= degrees90) && (flag1 == 1))
       {
-        if (comparasonFlag == 1)
+        if (comparisonFlag == 1)
         {
           digitalWrite(enableML, LOW);
           flag1 = 0;
         }
       }
-      comparasonFlag = 1;
+      comparisonFlag = 1;
       if ((encoderRBCount >= degrees90) && (flag2 == 1))
       {
-        if (comparasonFlag == 1)
+        if (comparisonFlag == 1)
         {
           digitalWrite(enableMR, LOW);
           flag2 = 0;
         }
       }
-      comparasonFlag = 1;
+      comparisonFlag = 1;
       if ((encoderLBCount >= (degrees90 - 25)) && (flag1 == 1))
       {
-        if (comparasonFlag == 1)
+        if (comparisonFlag == 1)
         {
           analogWrite(mL, 99);
         }
       }
-      comparasonFlag = 1;
+      comparisonFlag = 1;
       if ((encoderRBCount >= (degrees90 - 25)) && (flag2 == 1))
       {
-        if (comparasonFlag == 1)
+        if (comparisonFlag == 1)
         {
           analogWrite(mR, 155);
         }
@@ -390,23 +423,23 @@ void antiClockwise90( int turns)
 void encoderLBCounter( void )
 {
   encoderLBCount++;
-  comparasonFlag = 0;
+  comparisonFlag = 0;
 }
 
 void encoderLGCounter( void )
 {
   encoderLGCount++;
-  comparasonFlag = 0;
+  comparisonFlag = 0;
 }
 
 void encoderRBCounter( void )
 {
   encoderRBCount++;
-  comparasonFlag = 0;
+  comparisonFlag = 0;
 }
 
 void encoderRGCounter( void )
 {
   encoderRGCount++;
-  comparasonFlag = 0;
+  comparisonFlag = 0;
 }
