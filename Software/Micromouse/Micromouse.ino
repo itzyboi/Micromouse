@@ -10,9 +10,10 @@
 #define encoderRB 3 // Right motor encoder blue pin
 #define encoderRG 7 // Right motor encoder green pin
 
-#define FIR A0 // Front IR sensor on ADC 0
-#define LIR A1 // Left IR sensor on ADC 1
-#define RIR A2 // Right IR sensor on ADC 2
+#define FIR A1 // Front IR sensor on ADC 0
+#define LIR A2 // Left IR sensor on ADC 1
+#define RIR A0 // Right IR sensor on ADC 2
+#define IROn 4 // IR emitter pin
 
 // Constants
 #define squareWidth 510
@@ -44,12 +45,17 @@ byte orientation = 0; // Current orientation of the robot, 0 = north, 1 = east, 
 
 void setup()
 {
+  // Setup
   pinMode(enableMR, OUTPUT);
   pinMode(enableML, OUTPUT);
   digitalWrite(enableML, LOW); // These go low so early to try to stop robot running away on startup
   digitalWrite(enableMR, LOW);
   pinMode(mL, OUTPUT);
   pinMode(mR, OUTPUT);
+  pinMode(13, OUTPUT); // Pin powering IR sensor recievers
+  pinMode(IROn, OUTPUT); // Pin powering IR sensor Emitters
+  digitalWrite(13, HIGH);
+  digitalWrite(IROn, LOW);
 
   pinMode(encoderLB, INPUT);
   pinMode(encoderLG, INPUT);
@@ -62,11 +68,29 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(encoderLG), encoderLGCounter, RISING);
   attachInterrupt(digitalPinToInterrupt(encoderRB), encoderRBCounter, RISING);
   attachInterrupt(digitalPinToInterrupt(encoderRG), encoderRGCounter, RISING);
+
+  // Code
+  Serial.begin(9600);
 }
 
 void loop()
 {
-
+  Serial.print("F - bg: ");
+  Serial.println(frontSensor());
+  Serial.print("L - bg: ");
+  Serial.println(leftSensor());
+  Serial.print("R - bg: ");
+  Serial.println(rightSensor());
+  digitalWrite(IROn, HIGH);
+  delay(250);
+  Serial.print("F - on: ");
+  Serial.println(frontSensor());
+  Serial.print("L - on: ");
+  Serial.println(leftSensor());
+  Serial.print("R - on: ");
+  Serial.println(rightSensor());
+  digitalWrite(IROn, LOW);
+  delay(1000);
 }
 
 //DFA
@@ -197,19 +221,25 @@ void sensorRead()
   }
 }
 
-boolean frontSensor()
+int frontSensor()
 {
-  return 1;
+  int reading = 0;
+  reading = analogRead(FIR);
+  return reading;
 }
 
-boolean leftSensor()
+int leftSensor()
 {
-  return 1;
+  int reading = 0;
+  reading = analogRead(LIR);
+  return reading;
 }
 
-boolean rightSensor()
+int rightSensor()
 {
-  return 1;
+  int reading = 0;
+  reading = analogRead(RIR);
+  return reading;
 }
 
 //Movement
