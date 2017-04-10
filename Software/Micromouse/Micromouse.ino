@@ -20,7 +20,7 @@
 #define green 5
 
 // Constants
-#define squareWidth 520
+#define squareWidth 515
 #define degrees90 177
 
 // Orientation constants
@@ -49,6 +49,9 @@ byte edgeMatrix[8][8][4] = {0}; // Matrix to hold wall values
 byte x = 0; // x maze coordinate
 byte y = 0; // y maze coordinate
 byte orientation = 0; // Current orientation of the robot, 0 = north, 1 = east, 2 = south, 3 = west
+
+// A*
+byte shortestPath[36] = {0};
 
 void setup()
 {
@@ -88,7 +91,6 @@ void setup()
 
 void loop()
 {
-  
   switch (state)
   {
     case 0:
@@ -157,6 +159,7 @@ void loop()
         break;
       }
   }
+  
 }
 
 //DFA
@@ -422,7 +425,7 @@ void forward( int squares)
 
   for (i = 0; i < squares; i++)
   {
-    analogWrite(mL, 194);
+    analogWrite(mL, 193);
     analogWrite(mR, 191);
     encoderLBCount = 0;
     encoderLGCount = 0;
@@ -436,7 +439,7 @@ void forward( int squares)
     {
       //code goes here
       comparisonFlag = 1;
-      if ((encoderLBCount >= squareWidth) && (flag1 == 1))
+      if ((encoderLBCount >= (squareWidth + 1)) && (flag1 == 1))
       {
         if (comparisonFlag == 1)
         {
@@ -445,7 +448,7 @@ void forward( int squares)
         }
       }
       comparisonFlag = 1;
-      if ((encoderRBCount >= squareWidth) && (flag2 == 1))
+      if ((encoderRBCount >= (squareWidth)) && (flag2 == 1))
       {
         if (comparisonFlag == 1)
         {
@@ -458,7 +461,7 @@ void forward( int squares)
       {
         if (comparisonFlag == 1)
         {
-          analogWrite(mL, 155);
+          analogWrite(mL, 160);
         }
       }
       comparisonFlag = 1;
@@ -466,7 +469,7 @@ void forward( int squares)
       {
         if (comparisonFlag == 1)
         {
-          analogWrite(mR, 155);
+          analogWrite(mR, 160);
         }
       }
     }
@@ -482,7 +485,7 @@ void clockwise90( int turns)
 
   for (i = 0; i < turns; i++)
   {
-    analogWrite(mL, 168);
+    analogWrite(mL, 169);
     analogWrite(mR, 95);
     encoderLBCount = 0;
     encoderLGCount = 0;
@@ -495,7 +498,7 @@ void clockwise90( int turns)
     while (flag1 | flag2)
     {
       comparisonFlag = 1;
-      if ((encoderLBCount >= degrees90) && (flag1 == 1))
+      if ((encoderLBCount >= (degrees90)) && (flag1 == 1))
       {
         if (comparisonFlag == 1)
         {
@@ -504,7 +507,7 @@ void clockwise90( int turns)
         }
       }
       comparisonFlag = 1;
-      if ((encoderRBCount >= degrees90) && ( flag2 == 1))
+      if ((encoderRBCount >= (degrees90)) && ( flag2 == 1))
       {
         if (comparisonFlag == 1)
         {
@@ -517,7 +520,7 @@ void clockwise90( int turns)
       {
         if (comparisonFlag == 1)
         {
-          analogWrite(mL, 155);
+          analogWrite(mL, 160);
         }
       }
       comparisonFlag = 1;
@@ -525,7 +528,7 @@ void clockwise90( int turns)
       {
         if (comparisonFlag == 1)
         {
-          analogWrite(mR, 99);
+          analogWrite(mR, 94);
         }
       }
     }
@@ -541,7 +544,7 @@ void antiClockwise90( int turns)
 
   for (i = 0; i < turns; i++)
   {
-    analogWrite(mL, 95);
+    analogWrite(mL, 94);
     analogWrite(mR, 168);
     encoderLBCount = 0;
     encoderLGCount = 0;
@@ -554,7 +557,7 @@ void antiClockwise90( int turns)
     while (flag1 | flag2)
     {
       comparisonFlag = 1;
-      if ((encoderLBCount >= degrees90) && (flag1 == 1))
+      if ((encoderLBCount >= (degrees90 + 2)) && (flag1 == 1))
       {
         if (comparisonFlag == 1)
         {
@@ -563,7 +566,7 @@ void antiClockwise90( int turns)
         }
       }
       comparisonFlag = 1;
-      if ((encoderRBCount >= degrees90) && (flag2 == 1))
+      if ((encoderRBCount >= (degrees90)) && (flag2 == 1))
       {
         if (comparisonFlag == 1)
         {
@@ -576,7 +579,7 @@ void antiClockwise90( int turns)
       {
         if (comparisonFlag == 1)
         {
-          analogWrite(mL, 99);
+          analogWrite(mL, 94);
         }
       }
       comparisonFlag = 1;
@@ -584,7 +587,7 @@ void antiClockwise90( int turns)
       {
         if (comparisonFlag == 1)
         {
-          analogWrite(mR, 155);
+          analogWrite(mR, 160);
         }
       }
     }
@@ -615,3 +618,31 @@ void encoderRGCounter( void )
   encoderRGCount++;
   comparisonFlag = 0;
 }
+
+//A*
+void AStar( void)
+{
+  boolean found = 0;
+  byte openList[6][6] = {0};
+  byte closedList[6][6] = {0};
+  byte costs[6][6][5] = {0}; // 0 = F, 1 = G, 2 = H. , 3 = Parent X coord, 4 = Parent Y coord
+  
+  openList[0][0] = 1;
+
+  while(!found)
+  {
+    // Search open list for lowest F cost, then select it and put it in closed list
+    
+    // Calculate adjacent squares cost (if it is a valid move or not already clsoed), if cost is lower than it's current cost update cost and make selected square it's parent
+    
+    
+    
+    // Check if goal is in open list
+    if(openList[6][6] == 1)
+    {
+      found = 1;
+    }
+  }
+  // Calculate shortest path by following the parent squares backwards from goal
+}
+
