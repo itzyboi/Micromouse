@@ -86,7 +86,7 @@ void setup()
   // Code
   Serial.begin(9600);
   delay(1000);
-  
+
 }
 
 void loop()
@@ -141,7 +141,8 @@ void loop()
         digitalWrite(green, HIGH);
         if (rightSensor() > 130)
         {
-          // inset A* here
+          delay(1000);
+          AStar();
         }
         else if (leftSensor() > 130)
         {
@@ -159,7 +160,7 @@ void loop()
         break;
       }
   }
-  
+
 }
 
 //DFA
@@ -168,7 +169,7 @@ void DFA()
   int findX = 0;
   int findY = 0;
   boolean flag = 0;
-  
+
   while (!flag)
   {
     Serial.println();
@@ -192,7 +193,7 @@ void DFA()
     Serial.println(edgeMatrix[x][y][south]);
     Serial.print("west wall? ");
     Serial.println(edgeMatrix[x][y][west]);
-    
+
     if ((edgeMatrix[x][y][north] == 1) && (maze[x + 1][y] == 0)) // if north is a path and unvisited move there
     {
       turn(north);
@@ -238,7 +239,7 @@ void DFA()
       stackPointer--;
       findX = x - stack[stackPointer][0];
       findY = y - stack[stackPointer][1];
-      
+
       Serial.print("x(-1): ");
       Serial.print(stack[stackPointer][0]);
       Serial.print(" y(-1): ");
@@ -277,6 +278,10 @@ void DFA()
         y = stack[stackPointer][1];
       }
     }
+    if((x == 0) && (y == 0))
+    {
+      flag = 1;
+    }
   }
 }
 
@@ -306,14 +311,14 @@ void addEdge(int bearingToChange) // adds the edges
 void sensorRead()
 {
   int bearingToChange;
-  
+
   if (frontSensor() < 16)
   {
     Serial.print("adding front edge: ");
     Serial.println(orientation);
     addEdge(orientation);
   }
-    
+
   if (leftSensor() < 16)
   {
     Serial.println("Adding left edge");
@@ -321,7 +326,7 @@ void sensorRead()
     if (bearingToChange == -1)
     {
       bearingToChange = 3;
-    } 
+    }
     addEdge(bearingToChange);
   }
   if (rightSensor() < 16)
@@ -624,7 +629,7 @@ void AStar( void)
 {
   byte i = 0;
   byte j = 0;
-  
+
   boolean found = 0;
   boolean openList[6][6] = {0};
   boolean closedList[6][6] = {0};
@@ -634,32 +639,32 @@ void AStar( void)
   byte bestY = 255;
   byte tempX = 255;
   byte tempY = 255;
-  
-  for(i = 0; i < 6; i++)
+
+  for (i = 0; i < 6; i++)
   {
-    for(j = 0; j< 6; j++)
+    for (j = 0; j < 6; j++)
     {
       costs[i][j][0] = 255;
     }
   }
-
+  Serial.println("Starting A*");
   //Set initial condidtions - the search ends when the goal square enters the openList so it's initialised to a high F cost to be used in the first interation of the loop
   openList[0][0] = 1;
   costs[0][0][0] = 0;
-  costs[6][6][0] = 255;
-  bestX = 6;
-  bestY = 6;
-
-  while(!found)
+  costs[5][5][0] = 255;
+  Serial.println("Initial conditions done");
+  while (!found)
   {
+    bestX = 5;
+    bestY = 5;
     // Search open list for lowest F cost, then select it and put it in closed list
-    for(i = 0; i < 6; i++)
+    for (i = 0; i < 6; i++)
     {
-      for(j = 0; j< 6; j++)
+      for (j = 0; j < 6; j++)
       {
-        if(openList[i][j])
+        if (openList[i][j] == 1)
         {
-          if(costs[i][j][0] < costs[bestX][bestY][0])
+          if (costs[i][j][0] < costs[bestX][bestY][0])
           {
             bestX = i;
             bestY = j;
@@ -667,68 +672,149 @@ void AStar( void)
         }
       }
     }
-    closedList[bestX][bestY] = 1;
+    Serial.print("Found lowest F cost: ");
+    Serial.println(costs[bestX][bestY][0]);
+    Serial.print("Square: x: ");
+    Serial.print(bestX);
+    Serial.print(" y: ");
+    Serial.println(y);
+    closedList[bestX][bestY] = 1; 
     openList[bestX][bestY] = 0;
     // Calculate adjacent squares cost (if it is a valid move or not already closed), if cost is lower than it's current cost update cost and make selected square it's parent
-    if((edgeMatrix[bestX][bestY][north] == 1) && ( closedList[bestX + 1][bestY] == 0))
+    if ((edgeMatrix[bestX][bestY][north] == 1) && ( closedList[bestX + 1][bestY] == 0))
     {
       costs[bestX + 1][bestY][1] = costs[bestX][bestY][1] + 1; // Calculate G cost
-      costs[bestX + 1][bestY][2] = (6 - (bestX + 1)) + (6 - bestY); // Estimate H cost
+      costs[bestX + 1][bestY][2] = (5 - (bestX + 1)) + (5 - bestY); // Estimate H cost
       costs[bestX + 1][bestY][0] = costs[bestX + 1][bestY][1] + costs[bestX + 1][bestY][2]; // Calculate F cost
       costs[bestX + 1][bestY][3] = bestX; // Save parent x-coord
       costs[bestX + 1][bestY][4] = bestY; // Save parent y-coord
       costs[bestX + 1][bestY][5] = costs[bestX][bestY][5] + 1; // Update # of parent squares
+      openList[bestX + 1][bestY] = 1; // Add square to open list
     }
-    
-    else if((edgeMatrix[bestX][bestY][south] == 1) && ( closedList[bestX - 1][bestY] == 0))
+
+    else if ((edgeMatrix[bestX][bestY][south] == 1) && ( closedList[bestX - 1][bestY] == 0))
     {
       costs[bestX - 1][bestY][1] = costs[bestX][bestY][1] + 1; // Calculate G cost
-      costs[bestX - 1][bestY][2] = (6 - (bestX - 1)) + (6 - bestY); // Estimate H cost
+      costs[bestX - 1][bestY][2] = (5 - (bestX - 1)) + (5 - bestY); // Estimate H cost
       costs[bestX - 1][bestY][0] = costs[bestX - 1][bestY][1] + costs[bestX - 1][bestY][2]; // Calculate F cost
       costs[bestX - 1][bestY][3] = bestX; // Save parent x-coord
       costs[bestX - 1][bestY][4] = bestY; // Save parent y-coord
       costs[bestX - 1][bestY][5] = costs[bestX][bestY][5] + 1; // Update # of parent squares
+      openList[bestX - 1][bestY] = 1; // Add square to open list
     }
 
-    else if((edgeMatrix[bestX][bestY][east] == 1) && ( closedList[bestX][bestY + 1] == 0))
+    else if ((edgeMatrix[bestX][bestY][east] == 1) && ( closedList[bestX][bestY + 1] == 0))
     {
       costs[bestX][bestY + 1][1] = costs[bestX][bestY + 1][1] + 1; // Calculate G cost
-      costs[bestX][bestY + 1][2] = (6 - bestX) + (6 - (bestY + 1)); // Estimate H cost
+      costs[bestX][bestY + 1][2] = (5 - bestX) + (5 - (bestY + 1)); // Estimate H cost
       costs[bestX][bestY + 1][0] = costs[bestX][bestY + 1][1] + costs[bestX][bestY][2]; // Calculate F cost
       costs[bestX][bestY + 1][3] = bestX; // Save parent x-coord
       costs[bestX][bestY + 1][4] = bestY; // Save parent y-coord
       costs[bestX][bestY + 1][5] = costs[bestX][bestY][5] + 1; // Update # of parent squares
+      openList[bestX][bestY + 1] = 1; // Add square to open list
     }
 
-    else if((edgeMatrix[bestX][bestY][west] == 1) && ( closedList[bestX][bestY - 1] == 0))
+    else if ((edgeMatrix[bestX][bestY][west] == 1) && ( closedList[bestX][bestY - 1] == 0))
     {
       costs[bestX][bestY - 1][1] = costs[bestX][bestY - 1][1] + 1; // Calculate G cost
-      costs[bestX][bestY - 1][2] = (6 - bestX) + (6 - (bestY - 1)); // Estimate H cost
+      costs[bestX][bestY - 1][2] = (5 - bestX) + (5 - (bestY - 1)); // Estimate H cost
       costs[bestX][bestY - 1][0] = costs[bestX][bestY - 1][1] + costs[bestX][bestY][2]; // Calculate F cost
       costs[bestX][bestY - 1][3] = bestX; // Save parent x-coord
       costs[bestX][bestY - 1][4] = bestY; // Save parent y-coord
       costs[bestX][bestY - 1][5] = costs[bestX][bestY][5] + 1; // Update # of parent squares
+      openList[bestX][bestY - 1] = 1; // Add square to open list
     }
-    
+    Serial.println("Scored adjacents");
     // Check if goal is in open list and set loop condition false, goal has been found
-    if(openList[6][6] == 1)
+    if (openList[5][5] == 1)
     {
       found = 1;
     }
   }
-  
+  Serial.println("Calculated Costs, finding fastest route");
   // Calculate shortest path by following the parent squares backwards from goal
-  bestX = 6;
-  bestY = 6;
-  for(i = costs[6][6][5]; i = 0; i--)
+  bestX = 5;
+  bestY = 5;
+  for (i = costs[0][0][5]; i != 0; i--)
   {
-    shortestPath[i][0] = costs[bestX][bestY][3];
-    shortestPath[i][1] = costs[bestX][bestY][4];
+    shortestPath[i][0] = bestX;
+    shortestPath[i][1] = bestY;
     tempX = costs[bestX][bestY][3];
     tempY = costs[bestX][bestY][4];
     bestX = tempX;
     bestY = tempY;
   }
-  
+  Serial.println("Found fastest route, printing...");
+  for(i = 0; i < 36; i++)
+  {
+    Serial.print("X: ");
+    Serial.print(shortestPath[i][0]);
+    Serial.print(" Y: ");
+    Serial.println(shortestPath[i][1]);
+  }
+
+  // Drive to goal
+  int findX = 0;
+  int findY = 0;
+  x = 0;
+  y = 0;
+  i = 0;
+  orientation = north;
+
+  while (1)
+  {
+    if(x == 5)
+    {
+      if(y == 5)
+      {
+        break;
+      }
+    }
+    
+    findX = x - shortestPath[i][0];
+    findY = y - shortestPath[i][1];
+
+    Serial.print("findX: ");
+    Serial.println(findX);
+    Serial.print("findY: ");
+    Serial.println(findY);
+    
+    if (findX == -1)
+    {
+      turn(north);
+      orientation = north;
+      forward(1);
+      x = shortestPath[i][0];
+      y = shortestPath[i][1];
+    }
+    else if (findX == 1)
+    {
+      turn(south);
+      orientation = south;
+      forward(1);
+      x = shortestPath[i][0];
+      y = shortestPath[i][1];
+    }
+    else if (findY == -1)
+    {
+      turn(east);
+      orientation = east;
+      forward(1);
+      x = shortestPath[i][0];
+      y = shortestPath[i][1];
+    }
+    else if (findY == 1)
+    {
+      turn(west);
+      orientation = west;
+      forward(1);
+      x = shortestPath[i][0];
+      y = shortestPath[i][1];
+    }
+    else;
+    
+    i++;
+  }
+
 }
 
