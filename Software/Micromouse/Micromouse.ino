@@ -51,7 +51,7 @@ byte y = 0; // y maze coordinate
 byte orientation = 0; // Current orientation of the robot, 0 = north, 1 = east, 2 = south, 3 = west
 
 // A*
-byte shortestPath[36] = {0};
+byte shortestPath[36][2] = {0};
 
 void setup()
 {
@@ -622,27 +622,113 @@ void encoderRGCounter( void )
 //A*
 void AStar( void)
 {
-  boolean found = 0;
-  byte openList[6][6] = {0};
-  byte closedList[6][6] = {0};
-  byte costs[6][6][5] = {0}; // 0 = F, 1 = G, 2 = H. , 3 = Parent X coord, 4 = Parent Y coord
+  byte i = 0;
+  byte j = 0;
   
+  boolean found = 0;
+  boolean openList[6][6] = {0};
+  boolean closedList[6][6] = {0};
+  byte costs[6][6][6] = {0}; // 0 = F cost, 1 = G cost, 2 = H cost, 3 = Parent X coord, 4 = Parent Y coord, 5 = # of parents
+
+  byte bestX = 255;
+  byte bestY = 255;
+  byte tempX = 255;
+  byte tempY = 255;
+  
+  for(i = 0; i < 6; i++)
+  {
+    for(j = 0; j< 6; j++)
+    {
+      costs[i][j][0] = 255;
+    }
+  }
+
+  //Set initial condidtions - the search ends when the goal square enters the openList so it's initialised to a high F cost to be used in the first interation of the loop
   openList[0][0] = 1;
+  costs[0][0][0] = 0;
+  costs[6][6][0] = 255;
+  bestX = 6;
+  bestY = 6;
 
   while(!found)
   {
     // Search open list for lowest F cost, then select it and put it in closed list
+    for(i = 0; i < 6; i++)
+    {
+      for(j = 0; j< 6; j++)
+      {
+        if(openList[i][j])
+        {
+          if(costs[i][j][0] < costs[bestX][bestY][0])
+          {
+            bestX = i;
+            bestY = j;
+          }
+        }
+      }
+    }
+    closedList[bestX][bestY] = 1;
+    openList[bestX][bestY] = 0;
+    // Calculate adjacent squares cost (if it is a valid move or not already closed), if cost is lower than it's current cost update cost and make selected square it's parent
+    if((edgeMatrix[bestX][bestY][north] == 1) && ( closedList[bestX + 1][bestY] == 0))
+    {
+      costs[bestX + 1][bestY][1] = costs[bestX][bestY][1] + 1; // Calculate G cost
+      costs[bestX + 1][bestY][2] = (6 - (bestX + 1)) + (6 - bestY); // Estimate H cost
+      costs[bestX + 1][bestY][0] = costs[bestX + 1][bestY][1] + costs[bestX + 1][bestY][2]; // Calculate F cost
+      costs[bestX + 1][bestY][3] = bestX; // Save parent x-coord
+      costs[bestX + 1][bestY][4] = bestY; // Save parent y-coord
+      costs[bestX + 1][bestY][5] = costs[bestX][bestY][5] + 1; // Update # of parent squares
+    }
     
-    // Calculate adjacent squares cost (if it is a valid move or not already clsoed), if cost is lower than it's current cost update cost and make selected square it's parent
+    else if((edgeMatrix[bestX][bestY][south] == 1) && ( closedList[bestX - 1][bestY] == 0))
+    {
+      costs[bestX - 1][bestY][1] = costs[bestX][bestY][1] + 1; // Calculate G cost
+      costs[bestX - 1][bestY][2] = (6 - (bestX - 1)) + (6 - bestY); // Estimate H cost
+      costs[bestX - 1][bestY][0] = costs[bestX - 1][bestY][1] + costs[bestX - 1][bestY][2]; // Calculate F cost
+      costs[bestX - 1][bestY][3] = bestX; // Save parent x-coord
+      costs[bestX - 1][bestY][4] = bestY; // Save parent y-coord
+      costs[bestX - 1][bestY][5] = costs[bestX][bestY][5] + 1; // Update # of parent squares
+    }
+
+    else if((edgeMatrix[bestX][bestY][east] == 1) && ( closedList[bestX][bestY + 1] == 0))
+    {
+      costs[bestX][bestY + 1][1] = costs[bestX][bestY + 1][1] + 1; // Calculate G cost
+      costs[bestX][bestY + 1][2] = (6 - bestX) + (6 - (bestY + 1)); // Estimate H cost
+      costs[bestX][bestY + 1][0] = costs[bestX][bestY + 1][1] + costs[bestX][bestY][2]; // Calculate F cost
+      costs[bestX][bestY + 1][3] = bestX; // Save parent x-coord
+      costs[bestX][bestY + 1][4] = bestY; // Save parent y-coord
+      costs[bestX][bestY + 1][5] = costs[bestX][bestY][5] + 1; // Update # of parent squares
+    }
+
+    else if((edgeMatrix[bestX][bestY][west] == 1) && ( closedList[bestX][bestY - 1] == 0))
+    {
+      costs[bestX][bestY - 1][1] = costs[bestX][bestY - 1][1] + 1; // Calculate G cost
+      costs[bestX][bestY - 1][2] = (6 - bestX) + (6 - (bestY - 1)); // Estimate H cost
+      costs[bestX][bestY - 1][0] = costs[bestX][bestY - 1][1] + costs[bestX][bestY][2]; // Calculate F cost
+      costs[bestX][bestY - 1][3] = bestX; // Save parent x-coord
+      costs[bestX][bestY - 1][4] = bestY; // Save parent y-coord
+      costs[bestX][bestY - 1][5] = costs[bestX][bestY][5] + 1; // Update # of parent squares
+    }
     
-    
-    
-    // Check if goal is in open list
+    // Check if goal is in open list and set loop condition false, goal has been found
     if(openList[6][6] == 1)
     {
       found = 1;
     }
   }
+  
   // Calculate shortest path by following the parent squares backwards from goal
+  bestX = 6;
+  bestY = 6;
+  for(i = costs[6][6][5]; i = 0; i--)
+  {
+    shortestPath[i][0] = costs[bestX][bestY][3];
+    shortestPath[i][1] = costs[bestX][bestY][4];
+    tempX = costs[bestX][bestY][3];
+    tempY = costs[bestX][bestY][4];
+    bestX = tempX;
+    bestY = tempY;
+  }
+  
 }
 
