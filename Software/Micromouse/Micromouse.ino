@@ -677,7 +677,7 @@ void AStar( void)
     Serial.print("Square: x: ");
     Serial.print(bestX);
     Serial.print(" y: ");
-    Serial.println(y);
+    Serial.println(bestY);
     closedList[bestX][bestY] = 1; 
     openList[bestX][bestY] = 0;
     // Calculate adjacent squares cost (if it is a valid move or not already closed), if cost is lower than it's current cost update cost and make selected square it's parent
@@ -692,7 +692,7 @@ void AStar( void)
       openList[bestX + 1][bestY] = 1; // Add square to open list
     }
 
-    else if ((edgeMatrix[bestX][bestY][south] == 1) && ( closedList[bestX - 1][bestY] == 0))
+    if ((edgeMatrix[bestX][bestY][south] == 1) && ( closedList[bestX - 1][bestY] == 0))
     {
       costs[bestX - 1][bestY][1] = costs[bestX][bestY][1] + 1; // Calculate G cost
       costs[bestX - 1][bestY][2] = (5 - (bestX - 1)) + (5 - bestY); // Estimate H cost
@@ -703,9 +703,9 @@ void AStar( void)
       openList[bestX - 1][bestY] = 1; // Add square to open list
     }
 
-    else if ((edgeMatrix[bestX][bestY][east] == 1) && ( closedList[bestX][bestY + 1] == 0))
+    if ((edgeMatrix[bestX][bestY][east] == 1) && ( closedList[bestX][bestY + 1] == 0))
     {
-      costs[bestX][bestY + 1][1] = costs[bestX][bestY + 1][1] + 1; // Calculate G cost
+      costs[bestX][bestY + 1][1] = costs[bestX][bestY][1] + 1; // Calculate G cost
       costs[bestX][bestY + 1][2] = (5 - bestX) + (5 - (bestY + 1)); // Estimate H cost
       costs[bestX][bestY + 1][0] = costs[bestX][bestY + 1][1] + costs[bestX][bestY][2]; // Calculate F cost
       costs[bestX][bestY + 1][3] = bestX; // Save parent x-coord
@@ -714,9 +714,9 @@ void AStar( void)
       openList[bestX][bestY + 1] = 1; // Add square to open list
     }
 
-    else if ((edgeMatrix[bestX][bestY][west] == 1) && ( closedList[bestX][bestY - 1] == 0))
+    if ((edgeMatrix[bestX][bestY][west] == 1) && ( closedList[bestX][bestY - 1] == 0))
     {
-      costs[bestX][bestY - 1][1] = costs[bestX][bestY - 1][1] + 1; // Calculate G cost
+      costs[bestX][bestY - 1][1] = costs[bestX][bestY][1] + 1; // Calculate G cost
       costs[bestX][bestY - 1][2] = (5 - bestX) + (5 - (bestY - 1)); // Estimate H cost
       costs[bestX][bestY - 1][0] = costs[bestX][bestY - 1][1] + costs[bestX][bestY][2]; // Calculate F cost
       costs[bestX][bestY - 1][3] = bestX; // Save parent x-coord
