@@ -735,7 +735,9 @@ void AStar( void)
   // Calculate shortest path by following the parent squares backwards from goal
   bestX = 5;
   bestY = 5;
-  for (i = costs[0][0][5]; i != 0; i--)
+  Serial.print("# of parents goal has: ");
+  Serial.println(costs[0][0][5]);
+  for (i = costs[5][5][5]; i > 0; i--)
   {
     shortestPath[i][0] = bestX;
     shortestPath[i][1] = bestY;
