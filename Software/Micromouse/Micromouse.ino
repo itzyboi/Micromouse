@@ -20,8 +20,8 @@
 #define green 5
 
 // Constants
-#define squareWidth 515
-#define degrees90 177
+#define squareWidth 520
+#define degrees90 178
 
 // Orientation constants
 #define north 0
@@ -85,8 +85,6 @@ void setup()
 
   // Code
   Serial.begin(9600);
-  delay(1000);
-
 }
 
 void loop()
@@ -96,7 +94,7 @@ void loop()
     case 0:
       {
         digitalWrite(red, HIGH);
-        if (leftSensor() > 150)
+        if (leftSensor() > 130)
         {
           state = 1;
         }
@@ -118,6 +116,7 @@ void loop()
         {
           delay(1000);
           DFA();
+          turn(north);
           digitalWrite(yellow, LOW);
           state = 4;
         }
@@ -420,18 +419,20 @@ void turn( byte bearing) // bearing = 0(north),1(east),2(south),3(west)
   return;
 }
 
-
 void forward( int squares)
 {
   // Travels forward x squares, x being int squares.
   byte i = 0;
-  boolean flag1 = 1;
+  int difference = 0; // difference between left and right motor counts
+  byte speedL = 195; // Base speed of left motor
+  byte speedR = 191; // Base speed of right motor
+  boolean flag1 = 1; // flags used to tell mototrs to stop.
   boolean flag2 = 1;
 
   for (i = 0; i < squares; i++)
   {
-    analogWrite(mL, 193);
-    analogWrite(mR, 191);
+    analogWrite(mL, speedL);
+    analogWrite(mR, speedR);
     encoderLBCount = 0;
     encoderLGCount = 0;
     encoderRBCount = 0;
@@ -442,9 +443,11 @@ void forward( int squares)
     digitalWrite(enableMR, HIGH);
     while (flag1 | flag2)
     {
-      //code goes here
+      speedL = 195;
+      speedR = 191;
+      // Stop condidtion
       comparisonFlag = 1;
-      if ((encoderLBCount >= (squareWidth + 1)) && (flag1 == 1))
+      if ((encoderLBCount >= (squareWidth + 4)) && (flag1))
       {
         if (comparisonFlag == 1)
         {
@@ -453,7 +456,7 @@ void forward( int squares)
         }
       }
       comparisonFlag = 1;
-      if ((encoderRBCount >= (squareWidth)) && (flag2 == 1))
+      if ((encoderRBCount >= (squareWidth)) && (flag2))
       {
         if (comparisonFlag == 1)
         {
@@ -461,22 +464,51 @@ void forward( int squares)
           flag2 = 0;
         }
       }
+      // Slow down when coming to stop condition as to not overshoot
       comparisonFlag = 1;
-      if ((encoderLBCount >= (squareWidth - 25)) && (flag1 == 1))
+      if ((encoderLBCount >= (squareWidth - 25)) && (flag1))
       {
         if (comparisonFlag == 1)
         {
-          analogWrite(mL, 160);
+          speedL = speedL - 30;
         }
       }
       comparisonFlag = 1;
-      if ((encoderRBCount >= (squareWidth - 25)) && (flag2 == 1))
+      if ((encoderRBCount >= (squareWidth - 25)) && (flag2))
       {
         if (comparisonFlag == 1)
         {
-          analogWrite(mR, 160);
+          speedR = speedR - 30;
         }
       }
+      // Motor control: keep difference between encoder counts to a minimum.
+      difference = encoderRBCount - encoderLBCount;
+      comparisonFlag = 1;
+      if((difference > 0) &&(flag2))
+      {
+        if(comparisonFlag)
+        {
+          speedR = speedR - (5 * difference);
+          if(speedR < 0)
+          {
+            speedR = 0;
+          }
+        }
+      }
+      comparisonFlag = 1;
+      if((difference < 0) && (flag2))
+      {
+        if(comparisonFlag)
+        {
+          speedR = speedR - (5 * difference);
+          if(speedR > 255)
+          {
+            speedR = 255;
+          }
+        }
+      }
+      analogWrite(mL, speedL);
+      analogWrite(mR, speedR);
     }
   }
   return;
@@ -484,13 +516,15 @@ void forward( int squares)
 
 void clockwise90( int turns)
 {
+  byte speedL = 169;
+  byte speedR = 95;
   boolean flag1 = 1;
   boolean flag2 = 1;
   byte i = 0;
 
   for (i = 0; i < turns; i++)
   {
-    analogWrite(mL, 169);
+    analogWrite(mL, 165);
     analogWrite(mR, 95);
     encoderLBCount = 0;
     encoderLGCount = 0;
@@ -502,8 +536,12 @@ void clockwise90( int turns)
     digitalWrite(enableMR, HIGH);
     while (flag1 | flag2)
     {
+      speedL = 165;
+      speedR = 95;
       comparisonFlag = 1;
-      if ((encoderLBCount >= (degrees90)) && (flag1 == 1))
+
+      // Stop if goal met.
+      if ((encoderLBCount >= (degrees90)) && (flag1))
       {
         if (comparisonFlag == 1)
         {
@@ -512,7 +550,7 @@ void clockwise90( int turns)
         }
       }
       comparisonFlag = 1;
-      if ((encoderRBCount >= (degrees90)) && ( flag2 == 1))
+      if ((encoderRBCount >= (degrees90)) && ( flag2))
       {
         if (comparisonFlag == 1)
         {
@@ -520,22 +558,26 @@ void clockwise90( int turns)
           flag2 = 0;
         }
       }
+      // If coming close to goal, slow down to not overshoot
       comparisonFlag = 1;
-      if ((encoderLBCount >= (degrees90 - 25)) && (flag1 == 1))
+      if ((encoderLBCount >= (degrees90 - 25)) && (flag1))
       {
-        if (comparisonFlag == 1)
+        if (comparisonFlag)
         {
-          analogWrite(mL, 160);
+          speedL = speedL - 5;
         }
       }
       comparisonFlag = 1;
-      if ((encoderRBCount >= (degrees90 - 25)) && (flag2 == 1))
+      if ((encoderRBCount >= (degrees90 - 25)) && (flag2))
       {
-        if (comparisonFlag == 1)
+        if (comparisonFlag)
         {
-          analogWrite(mR, 94);
+          speedR = speedR + 5;
         }
       }
+      // Keep count difference to a minimum.
+      analogWrite(mL, speedL);
+      analogWrite(mR, speedR);
     }
   }
   return;
@@ -543,14 +585,16 @@ void clockwise90( int turns)
 
 void antiClockwise90( int turns)
 {
+  byte speedL = 95;
+  byte speedR = 163;
   boolean flag1 = 1;
   boolean flag2 = 1;
   byte i = 0;
 
   for (i = 0; i < turns; i++)
   {
-    analogWrite(mL, 94);
-    analogWrite(mR, 168);
+    analogWrite(mL, speedL);
+    analogWrite(mR, speedR);
     encoderLBCount = 0;
     encoderLGCount = 0;
     encoderRBCount = 0;
@@ -561,8 +605,12 @@ void antiClockwise90( int turns)
     digitalWrite(enableMR, HIGH);
     while (flag1 | flag2)
     {
+      speedL = 95;
+      speedR = 163;
       comparisonFlag = 1;
-      if ((encoderLBCount >= (degrees90 + 2)) && (flag1 == 1))
+
+      // Stop if goal met.
+      if ((encoderLBCount >= (degrees90)) && (flag1))
       {
         if (comparisonFlag == 1)
         {
@@ -571,7 +619,7 @@ void antiClockwise90( int turns)
         }
       }
       comparisonFlag = 1;
-      if ((encoderRBCount >= (degrees90)) && (flag2 == 1))
+      if ((encoderRBCount >= (degrees90)) && ( flag2))
       {
         if (comparisonFlag == 1)
         {
@@ -579,22 +627,26 @@ void antiClockwise90( int turns)
           flag2 = 0;
         }
       }
+      // If coming close to goal, slow down to not overshoot
       comparisonFlag = 1;
-      if ((encoderLBCount >= (degrees90 - 25)) && (flag1 == 1))
+      if ((encoderLBCount >= (degrees90 - 25)) && (flag1))
       {
-        if (comparisonFlag == 1)
+        if (comparisonFlag)
         {
-          analogWrite(mL, 94);
+          speedL = speedL + 5;
         }
       }
       comparisonFlag = 1;
-      if ((encoderRBCount >= (degrees90 - 25)) && (flag2 == 1))
+      if ((encoderRBCount >= (degrees90 - 25)) && (flag2))
       {
-        if (comparisonFlag == 1)
+        if (comparisonFlag)
         {
-          analogWrite(mR, 160);
+          speedR = speedR - 5;
         }
       }
+      // Keep count difference to a minimum.
+      analogWrite(mL, speedL);
+      analogWrite(mR, speedR);
     }
   }
   return;
@@ -677,7 +729,7 @@ void AStar( void)
     Serial.print("Square: x: ");
     Serial.print(bestX);
     Serial.print(" y: ");
-    Serial.println(y);
+    Serial.println(bestY);
     closedList[bestX][bestY] = 1; 
     openList[bestX][bestY] = 0;
     // Calculate adjacent squares cost (if it is a valid move or not already closed), if cost is lower than it's current cost update cost and make selected square it's parent
@@ -692,7 +744,7 @@ void AStar( void)
       openList[bestX + 1][bestY] = 1; // Add square to open list
     }
 
-    else if ((edgeMatrix[bestX][bestY][south] == 1) && ( closedList[bestX - 1][bestY] == 0))
+    if ((edgeMatrix[bestX][bestY][south] == 1) && ( closedList[bestX - 1][bestY] == 0))
     {
       costs[bestX - 1][bestY][1] = costs[bestX][bestY][1] + 1; // Calculate G cost
       costs[bestX - 1][bestY][2] = (5 - (bestX - 1)) + (5 - bestY); // Estimate H cost
@@ -703,9 +755,9 @@ void AStar( void)
       openList[bestX - 1][bestY] = 1; // Add square to open list
     }
 
-    else if ((edgeMatrix[bestX][bestY][east] == 1) && ( closedList[bestX][bestY + 1] == 0))
+    if ((edgeMatrix[bestX][bestY][east] == 1) && ( closedList[bestX][bestY + 1] == 0))
     {
-      costs[bestX][bestY + 1][1] = costs[bestX][bestY + 1][1] + 1; // Calculate G cost
+      costs[bestX][bestY + 1][1] = costs[bestX][bestY][1] + 1; // Calculate G cost
       costs[bestX][bestY + 1][2] = (5 - bestX) + (5 - (bestY + 1)); // Estimate H cost
       costs[bestX][bestY + 1][0] = costs[bestX][bestY + 1][1] + costs[bestX][bestY][2]; // Calculate F cost
       costs[bestX][bestY + 1][3] = bestX; // Save parent x-coord
@@ -714,9 +766,9 @@ void AStar( void)
       openList[bestX][bestY + 1] = 1; // Add square to open list
     }
 
-    else if ((edgeMatrix[bestX][bestY][west] == 1) && ( closedList[bestX][bestY - 1] == 0))
+    if ((edgeMatrix[bestX][bestY][west] == 1) && ( closedList[bestX][bestY - 1] == 0))
     {
-      costs[bestX][bestY - 1][1] = costs[bestX][bestY - 1][1] + 1; // Calculate G cost
+      costs[bestX][bestY - 1][1] = costs[bestX][bestY][1] + 1; // Calculate G cost
       costs[bestX][bestY - 1][2] = (5 - bestX) + (5 - (bestY - 1)); // Estimate H cost
       costs[bestX][bestY - 1][0] = costs[bestX][bestY - 1][1] + costs[bestX][bestY][2]; // Calculate F cost
       costs[bestX][bestY - 1][3] = bestX; // Save parent x-coord
@@ -735,7 +787,9 @@ void AStar( void)
   // Calculate shortest path by following the parent squares backwards from goal
   bestX = 5;
   bestY = 5;
-  for (i = costs[0][0][5]; i != 0; i--)
+  Serial.print("# of parents goal has: ");
+  Serial.println(costs[0][0][5]);
+  for (i = costs[5][5][5]; i > 0; i--)
   {
     shortestPath[i][0] = bestX;
     shortestPath[i][1] = bestY;
