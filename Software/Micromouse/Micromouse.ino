@@ -51,7 +51,7 @@ byte y = 0; // y maze coordinate
 byte orientation = 0; // Current orientation of the robot, 0 = north, 1 = east, 2 = south, 3 = west
 
 // A*
-byte shortestPath[36][2] = {0};
+byte shortestPath[36][2] = {0}; // Shortest path array, comtains X and Y coords of the path
 
 void setup()
 {
@@ -91,42 +91,42 @@ void loop()
 {
   switch (state)
   {
-    case 0:
+    case 0: // Do nothing state, stops it accidentaly beginning a search
       {
         digitalWrite(red, HIGH);
-        if (leftSensor() > 130)
+        if (leftSensor() > 130) // Waits for you to brush an object infront of a sensor
         {
-          state = 1;
+          state = 1; // Set state to intermediate state
         }
         break;
       }
-    case 1:
+    case 1: // Intermediate state, to stop the modes cycling at clock speed
       {
-        if (leftSensor() < 100)
+        if (leftSensor() < 100) // Waits for object to be moved away
         {
           digitalWrite(red, LOW);
-          state = 2;
+          state = 2; // Enter search mode
         }
         break;
       }
-    case 2:
+    case 2: // Search mode state
       {
         digitalWrite(yellow, HIGH);
-        if (rightSensor() > 130)
+        if (rightSensor() > 130) // If object is put infront of right sensor, preform a search
         {
-          delay(1000);
-          DFA();
-          turn(north);
+          delay(1000); // Wait a second for object to be moved away
+          DFA(); // Search
+          turn(north); // After search has been preformed, turn so robot is facing square exit
           digitalWrite(yellow, LOW);
-          state = 4;
+          state = 4; // Enter A* state
         }
-        else if (leftSensor() > 130)
+        else if (leftSensor() > 130) // Else wait for an object to be placed infront of the left sensor to change mode
         {
           state = 3;
         }
         break;
       }
-    case 3:
+    case 3: // Intermediate mode to stop mode cycling at clock speed
       {
         if (leftSensor() < 100)
         {
@@ -135,21 +135,21 @@ void loop()
         }
         break;
       }
-    case 4:
+    case 4: // A* (PAthfinding state) state
       {
         digitalWrite(green, HIGH);
-        if (rightSensor() > 130)
+        if (rightSensor() > 130) //Perform A* if object placed infront of right sensor
         {
           delay(1000);
           AStar();
         }
-        else if (leftSensor() > 130)
+        else if (leftSensor() > 130) // Go back to do nothing state if object placed infront of left sensors
         {
           state = 5;
         }
         break;
       }
-    case 5:
+    case 5: // Intermediate state to stop state cycling at clock speed
       {
         if (leftSensor() < 100)
         {
@@ -172,12 +172,16 @@ void DFA()
   while (!flag)
   {
     Serial.println();
-    if (maze[x][y] == 0) // if maze node is unvisited
+    /*
+    If the square has never been visited before the sensors must be read to check for walls.
+    This only needs to happen the first time as readings are assumed correct
+    */
+    if (maze[x][y] == 0) // Check to see if node is unvisited
     {
-      sensorRead();
-      maze[x][y] = 1; // set maze node to visited
+      sensorRead(); // Sense walls
+      maze[x][y] = 1; // set node to visited
     }
-    Serial.println();
+    Serial.println(); // Print over serial for debugging
     Serial.print("x: ");
     Serial.print(x);
     Serial.print(" y: ");
@@ -192,18 +196,24 @@ void DFA()
     Serial.println(edgeMatrix[x][y][south]);
     Serial.print("west wall? ");
     Serial.println(edgeMatrix[x][y][west]);
-
-    if ((edgeMatrix[x][y][north] == 1) && (maze[x + 1][y] == 0)) // if north is a path and unvisited move there
+    /*
+    Once maze data has been collected for the current square, the robot must decide what square to move to next.
+    It will always try to go north first, if it is unable to (Either there is a wall in the way or the node has already been visited)
+    It will then try to go east, then south then west.
+    As it travels it saves the squares it has been to in a stack, so if it hits a dead end it can back track it's steps 
+    until it can travel into a new square.IT repeats this process untill it returns to the start square (0,0)
+    */
+    if ((edgeMatrix[x][y][north] == 1) && (maze[x + 1][y] == 0)) // IF there is a path north and the north square is unvisited
     {
-      turn(north);
+      turn(north); // move there
       orientation = north;
       forward(1);
-      x = x + 1;
-      stackPointer++;
+      x = x + 1; // update coordinates
+      stackPointer++; // Save the coordinates to the stack
       stack[stackPointer][0] = x;
       stack[stackPointer][1] = y;
     }
-    else if ((edgeMatrix[x][y][east] == 1) && (maze[x][y + 1] == 0)) // if east is a path and unvisited move there
+    else if ((edgeMatrix[x][y][east] == 1) && (maze[x][y + 1] == 0)) // Else try to move east
     {
       turn(east);
       orientation = east;
@@ -213,7 +223,7 @@ void DFA()
       stack[stackPointer][0] = x;
       stack[stackPointer][1] = y;
     }
-    else if ((edgeMatrix[x][y][south] == 1) && (maze[x - 1][y] == 0)) // if south is a path and unvisited move there
+    else if ((edgeMatrix[x][y][south] == 1) && (maze[x - 1][y] == 0)) // Else try to move south
     {
       turn(south);
       orientation = south;
@@ -223,7 +233,7 @@ void DFA()
       stack[stackPointer][0] = x;
       stack[stackPointer][1] = y;
     }
-    else if ((edgeMatrix[x][y][west] == 1) && (maze[x][y - 1] == 0)) // if west is a path and unvisited move there
+    else if ((edgeMatrix[x][y][west] == 1) && (maze[x][y - 1] == 0)) // Else try to move west
     {
       turn(west);
       orientation = west;
@@ -233,18 +243,25 @@ void DFA()
       stack[stackPointer][0] = x;
       stack[stackPointer][1] = y;
     }
-    else // If there is no direction unsearched go back to previous node, revise orientation setup to use stacked coords
+    else // Other wise pop the stack and travel back a square
     {
       stackPointer--;
-      findX = x - stack[stackPointer][0];
-      findY = y - stack[stackPointer][1];
-
-      Serial.print("x(-1): ");
+      // Only one coordinate can change every square moved, therefore to find the direction
+      // to travel the coordinated to move to are subtracted from the current coordinates.
+      // This then gives the direction to travel as follows.
+      // X1 - X2 = -1 --> move north
+      // x1 - x2 = 1  --> move south
+      // y1 - y2 = 1  --> move west
+      // y1 - y2 = -1 --> move east
+      findX = x - stack[stackPointer][0]; // calculate X change
+      findY = y - stack[stackPointer][1]; // Calculate Y change
+      
+      Serial.print("x(-1): "); // Print debugging infomation
       Serial.print(stack[stackPointer][0]);
       Serial.print(" y(-1): ");
       Serial.println(stack[stackPointer][1]);
 
-      if (findX == -1)
+      if (findX == -1) // move north
       {
         turn(north);
         orientation = north;
@@ -252,7 +269,7 @@ void DFA()
         x = stack[stackPointer][0];
         y = stack[stackPointer][1];
       }
-      else if (findX == 1)
+      else if (findX == 1) // move south
       {
         turn(south);
         orientation = south;
@@ -260,7 +277,7 @@ void DFA()
         x = stack[stackPointer][0];
         y = stack[stackPointer][1];
       }
-      else if (findY == -1)
+      else if (findY == -1) // move east
       {
         turn(east);
         orientation = east;
@@ -268,7 +285,7 @@ void DFA()
         x = stack[stackPointer][0];
         y = stack[stackPointer][1];
       }
-      else if (findY == 1)
+      else if (findY == 1) // move west
       {
         turn(west);
         orientation = west;
@@ -277,31 +294,36 @@ void DFA()
         y = stack[stackPointer][1];
       }
     }
-    if((x == 0) && (y == 0))
+    if((x == 0) && (y == 0)) // Check to see if the robot has returned to the beginning. If it has exit search
     {
       flag = 1;
     }
   }
 }
 
-void addEdge(int bearingToChange) // adds the edges
+void addEdge(int bearingToChange) 
 {
-  Serial.print("bearingToChange: ");
+  /*
+  Adds a path between two squares. Takes an orientation as input and removes the wall in that direction
+  */
+  Serial.print("bearingToChange: "); // print debugging info
   Serial.println(bearingToChange);
-  edgeMatrix[x][y][bearingToChange] = 1;
-  if (bearingToChange == north)
+  
+  edgeMatrix[x][y][bearingToChange] = 1; // Removes the wall in the orientation given for the current square
+  // As each square has a bit for each wall, the wall must also be removed in the adjacent square.
+  if (bearingToChange == north) // If removing north wall, remove southern wall in the northern square
   {
     edgeMatrix[x + 1][y][south] = 1;
   }
-  else if (bearingToChange == east)
+  else if (bearingToChange == east) // If removing east wall, remove west wall in the eastern square
   {
     edgeMatrix[x][y + 1][west] = 1;
   }
-  else if (bearingToChange == south)
+  else if (bearingToChange == south) // If removing south wall, remove north wall in southern square
   {
     edgeMatrix[x - 1][y][north] = 1;
   }
-  else if (bearingToChange == west)
+  else if (bearingToChange == west) // If removing west wall, remove east wall in western square
   {
     edgeMatrix[x][y - 1][east] = 1;
   }
@@ -309,15 +331,23 @@ void addEdge(int bearingToChange) // adds the edges
 
 void sensorRead()
 {
+  /*
+  Tells sensors to take a reading, it then checks to see fi the reading is below the threshold ADC value found in testing.
+  The threshold value is the value a sensor reads if a wall is 6cm away (The maximum distance the robot can be from a wall.
+  If the reading is less than the threshold it removes the wall by calling addEdge() and gives it the direction to change.
+  */
   int bearingToChange;
 
   if (frontSensor() < 16)
   {
     Serial.print("adding front edge: ");
     Serial.println(orientation);
-    addEdge(orientation);
+    addEdge(orientation); // The front sensor is always facing the direction the robot is facing
   }
-
+  /*
+  To calculate the direction the left and right sensors are facing 1 is added or subtracted from the forward direction. 
+  If this is outside of the range of the defined directions at the top it wraps the value round before calling addEdge()
+  */
   if (leftSensor() < 16)
   {
     Serial.println("Adding left edge");
@@ -342,19 +372,25 @@ void sensorRead()
   }
 }
 
-int frontSensor()
+int frontSensor() 
 {
-  digitalWrite(IROn, LOW);
+  /*
+  Takes a raw reading of the reflected light.
+  It does this by turning the IR LED off and taking a background reading, It then turns the LED back on and takes 
+  another reading.
+  It then returns the background reading subtracted from the reflected reading.
+  */
+  digitalWrite(IROn, LOW); // Turn LED off (it should already be off) 
   delay(50);
-  int x = analogRead(FIR);
+  int x = analogRead(FIR); // Take a background reading
   delay(50);
-  digitalWrite(IROn, HIGH);
+  digitalWrite(IROn, HIGH); // Turn LED back on
   delay(50);
-  int y = analogRead(FIR);
-  digitalWrite(IROn, LOW);
+  int y = analogRead(FIR); // Take reflected light reading
+  digitalWrite(IROn, LOW); // Turn LED back off
   Serial.print("FIR");
-  Serial.println(y - x);
-  return (y - x);
+  Serial.println(y - x); 
+  return (y - x); // Return the difference
 }
 
 int leftSensor()
