@@ -20,7 +20,7 @@
 #define green 5
 
 // Constants
-#define squareWidth 520
+#define squareWidth 515
 #define degrees90 178
 
 // Orientation constants
@@ -354,7 +354,7 @@ int frontSensor()
   digitalWrite(IROn, LOW);
   Serial.print("FIR");
   Serial.println(y - x);
-  return (y - x);
+  return (y - x -2);
 }
 
 int leftSensor()
@@ -369,7 +369,7 @@ int leftSensor()
   digitalWrite(IROn, LOW);
   Serial.print("LIR");
   Serial.println(y - x);
-  return (y - x);
+  return (y - x -2);
 }
 
 int rightSensor()
@@ -384,7 +384,7 @@ int rightSensor()
   digitalWrite(IROn, LOW);
   Serial.print("RIR");
   Serial.println(y - x);
-  return (y - x);
+  return (y - x - 2);
 }
 
 //Movement
@@ -815,7 +815,7 @@ void AStar( void)
   i = 0;
   orientation = north;
 
-  while (1)
+  while (i < 35)
   {
     if(x == 5)
     {
