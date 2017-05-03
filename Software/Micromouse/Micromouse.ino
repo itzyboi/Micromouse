@@ -15,15 +15,15 @@
 #define RIR A0 // Right IR sensor on ADC 2
 #define IROn 4 // IR emitter pin
 // LED pins
-#define red 7
-#define yellow 6
-#define green 5
+#define red 7     // Red LED pin
+#define yellow 6  // Yellow LED pin
+#define green 5   // Green LED pin
 
 // Constants
-#define squareWidth 520
-#define degrees90 178
+#define squareWidth 520 // The number of encoder counts needed to travel 1 square forwards
+#define degrees90 178   // The number of encoder counts needed to turn 90 degrees
 
-// Orientation constants
+// Cardinal Direction constants
 #define north 0
 #define east  1
 #define south 2
@@ -77,7 +77,7 @@ void setup()
   pinMode(green, OUTPUT);
 
   interrupts();
-
+// Attach interrupts to all the encoder inputs
   attachInterrupt(digitalPinToInterrupt(encoderLB), encoderLBCounter, RISING);
   attachInterrupt(digitalPinToInterrupt(encoderLG), encoderLGCounter, RISING);
   attachInterrupt(digitalPinToInterrupt(encoderRB), encoderRBCounter, RISING);
@@ -89,7 +89,7 @@ void setup()
 
 void loop()
 {
-  switch (state)
+  switch (state) // Main state machine, uses the IR sensors to select a mode
   {
     case 0: // Do nothing state, stops it accidentaly beginning a search
       {
@@ -426,24 +426,32 @@ int rightSensor()
 //Movement
 void turn( byte bearing) // bearing = 0(north),1(east),2(south),3(west)
 {
-  int turns = orientation - bearing;
-  Serial.print("turns prefix: ");
+  /*
+  Calculates the number of turns the robot has to make to be facing a specific direction.
+  It does this by subtracting the direction you wish to face from the current robot direction.
+  If the robot calculates 3 turns in a direction are needed the function changes this to one turn in the opposite direction as this is equivilent.
+  */
+  int turns = orientation - bearing; // Calculate # of turns
+  
+  Serial.print("turns prefix: "); // Debugging code
   Serial.println(turns);
-  if (turns == 0)
+  
+  if (turns == 0) // If the robot calculates 0 turns then the robot can just return to where this function was called
   {
     return;
   }
-  else if (turns == 3)
+  else if (turns == 3) // 3 anti-clockwise turns are changed to one clockwise turn
   {
     turns = -1;
   }
-  else if (turns == -3)
+  else if (turns == -3) // 3 clockwise turns are converted to one anti-clockwise turn
   {
     turns = 1;
   }
 
-  Serial.print("turns postfix: ");
+  Serial.print("turns postfix: "); // Print fixed # of turns for debugging
   Serial.println(turns);
+  
   if (turns > 0)
   {
     antiClockwise90(turns);
@@ -465,39 +473,39 @@ void forward( int squares)
   boolean flag1 = 1; // flags used to tell mototrs to stop.
   boolean flag2 = 1;
 
-  for (i = 0; i < squares; i++)
+  for (i = 0; i < squares; i++) // The program to drive forwards 1 square is looped as many times as you need to move forward squares.
   {
-    analogWrite(mL, speedL);
+    analogWrite(mL, speedL); // Set the speed of the motors to be the default speed set above
     analogWrite(mR, speedR);
-    encoderLBCount = 0;
+    encoderLBCount = 0; // Reset all the encoder counts, the interrupts do not turn off between movements as it turns the timer interrupts off too. which the delays are based off
     encoderLGCount = 0;
     encoderRBCount = 0;
     encoderRGCount = 0;
-    flag1 = 1;
+    flag1 = 1; // Reset the stop flags to high between movements, or robot will only move forward once
     flag2 = 1;
-    digitalWrite(enableML, HIGH);
+    digitalWrite(enableML, HIGH); // Turn the motor enables on
     digitalWrite(enableMR, HIGH);
-    while (flag1 | flag2)
+    while (flag1 | flag2) // Keeps the loop going until both stop conditions are met.
     {
-      speedL = 195;
-      speedR = 191;
+      speedL = 195; // the speed that each motor needs to travel at is reset at the beginning of the loop
+      speedR = 191; // This default value travels through the loop to get the actual speed needed before being written to the motor at the end
       // Stop condidtion
-      comparisonFlag = 1;
-      if ((encoderLBCount >= (squareWidth + 4)) && (flag1))
+      comparisonFlag = 1; // The comparison flag is used on all if's that use the int variable type. This is due to these needed two cycles to calculate and allowing them to be interrupted by the encoders ruining their result.
+      if ((encoderLBCount >= (squareWidth + 4)) && (flag1)) // Stop condition for the left motor
       {
         if (comparisonFlag == 1)
         {
-          digitalWrite(enableML, LOW);
-          flag1 = 0;
+          digitalWrite(enableML, LOW); // Turn the motor enable off (Tells the motor driver chip to stop the motor)
+          flag1 = 0; // set the stop condition for this motor
         }
       }
       comparisonFlag = 1;
-      if ((encoderRBCount >= (squareWidth)) && (flag2))
+      if ((encoderRBCount >= (squareWidth)) && (flag2)) // stop condidion for the right motor
       {
         if (comparisonFlag == 1)
         {
-          digitalWrite(enableMR, LOW);
-          flag2 = 0;
+          digitalWrite(enableMR, LOW); // Turn the motor enable off (Tells the motor driver chip to stop the motor)
+          flag2 = 0; // set the stop condition for this motor
         }
       }
       // Slow down when coming to stop condition as to not overshoot
@@ -506,7 +514,7 @@ void forward( int squares)
       {
         if (comparisonFlag == 1)
         {
-          speedL = speedL - 30;
+          speedL = speedL - 30; // If the left motor is near the count goal slow it's speed by 30
         }
       }
       comparisonFlag = 1;
@@ -514,10 +522,16 @@ void forward( int squares)
       {
         if (comparisonFlag == 1)
         {
-          speedR = speedR - 30;
+          speedR = speedR - 30; // if the right motor count is near it's goal, slow the right motor 30
         }
       }
-      // Motor control: keep difference between encoder counts to a minimum.
+      /*
+      Motor Control:
+      To keep the motors travelling at the same speed the difference between the two encoder counts is multiplied by 
+      a static gain and applied to the left motors speed. This means that the further the two counts get from each other the faster or slower 
+      the left motor spins to attempt to keep them aligned. the gain of 5 is quite aggressive, as can be seen in person with the robot
+      wobbling a bit in the straights
+      */
       difference = encoderRBCount - encoderLBCount;
       comparisonFlag = 1;
       if((difference > 0) &&(flag2))
@@ -525,7 +539,7 @@ void forward( int squares)
         if(comparisonFlag)
         {
           speedR = speedR - (5 * difference);
-          if(speedR < 0)
+          if(speedR < 0) // do not let the speed go below the minimum value that can be written using analogWrite
           {
             speedR = 0;
           }
@@ -537,13 +551,13 @@ void forward( int squares)
         if(comparisonFlag)
         {
           speedR = speedR - (5 * difference);
-          if(speedR > 255)
+          if(speedR > 255) // do not let the speed go above the maximum value that can be written using analogWrite
           {
             speedR = 255;
           }
         }
       }
-      analogWrite(mL, speedL);
+      analogWrite(mL, speedL); // Write the new calculated speed to both of the motors
       analogWrite(mR, speedR);
     }
   }
@@ -552,67 +566,71 @@ void forward( int squares)
 
 void clockwise90( int turns)
 {
+  /*
+  The clockwise90 function commands the motors via the motor driver to make a 90 degree clockwise turn.
+  It works in a very similar way to the forward function except that the motor control system was not implemented.
+  */
   byte speedL = 169;
   byte speedR = 95;
   boolean flag1 = 1;
   boolean flag2 = 1;
   byte i = 0;
 
-  for (i = 0; i < turns; i++)
+  for (i = 0; i < turns; i++) // Rerun the 90 degree turn for input # of times
   {
-    analogWrite(mL, 165);
+    analogWrite(mL, 165); // Write the default speed to the motors for speed calculations
     analogWrite(mR, 95);
-    encoderLBCount = 0;
+    encoderLBCount = 0; // Reset encoder counts as they are still active during all other code
     encoderLGCount = 0;
     encoderRBCount = 0;
     encoderRGCount = 0;
-    flag1 = 1;
+    flag1 = 1; // Reset stop flags
     flag2 = 1;
-    digitalWrite(enableML, HIGH);
+    digitalWrite(enableML, HIGH); // Enable both motors
     digitalWrite(enableMR, HIGH);
-    while (flag1 | flag2)
+    
+    while (flag1 | flag2) // stop the loop when both motors have travelled their set distance
     {
-      speedL = 165;
+      speedL = 165; // Write the default speed to the motors for speed calculations
       speedR = 95;
       comparisonFlag = 1;
 
       // Stop if goal met.
-      if ((encoderLBCount >= (degrees90)) && (flag1))
+      if ((encoderLBCount >= (degrees90)) && (flag1)) 
       {
-        if (comparisonFlag == 1)
+        if (comparisonFlag == 1) // The comparason flag is used again for these If's as the encoder counts are integers that take 2 cycles to evaluate and can be interrupted ruining the result
         {
-          digitalWrite(enableML, LOW);
-          flag1 = 0;
+          digitalWrite(enableML, LOW); // Write the enable for the left motor low once it's reached it's target
+          flag1 = 0; // set the left motor travel as complete
         }
       }
       comparisonFlag = 1;
-      if ((encoderRBCount >= (degrees90)) && ( flag2))
+      if ((encoderRBCount >= (degrees90)) && ( flag2)) 
       {
         if (comparisonFlag == 1)
         {
-          digitalWrite(enableMR, LOW);
-          flag2 = 0;
+          digitalWrite(enableMR, LOW); // Write the right motor low if it has met it's target
+          flag2 = 0; // Set right motor travel as complete
         }
       }
       // If coming close to goal, slow down to not overshoot
       comparisonFlag = 1;
-      if ((encoderLBCount >= (degrees90 - 25)) && (flag1))
+      if ((encoderLBCount >= (degrees90 - 25)) && (flag1)) // as little overshoot is needed as possible, therefore the motors should be set to drive very slowly  just before the target distance is met.
       {
         if (comparisonFlag)
         {
-          speedL = speedL - 5;
+          speedL = speedL - 5; // Turns are made much slower than forward movements, hence only 5 is taken away not 30
         }
       }
       comparisonFlag = 1;
-      if ((encoderRBCount >= (degrees90 - 25)) && (flag2))
+      if ((encoderRBCount >= (degrees90 - 25)) && (flag2)) // Do the same for the right motor as was done to the left motor above
       {
         if (comparisonFlag)
         {
-          speedR = speedR + 5;
+          speedR = speedR + 5; // Adding 5 to the speed as the right motor is in reverse this time
         }
       }
-      // Keep count difference to a minimum.
-      analogWrite(mL, speedL);
+      analogWrite(mL, speedL); // Update motor speeds
       analogWrite(mR, speedR);
     }
   }
@@ -621,6 +639,10 @@ void clockwise90( int turns)
 
 void antiClockwise90( int turns)
 {
+  /*
+  The aniclockwise function is identical to the clockwise90 function, but with the speeds swapped.
+  Please read the clockwise90 comments.
+  */
   byte speedL = 95;
   byte speedR = 163;
   boolean flag1 = 1;
