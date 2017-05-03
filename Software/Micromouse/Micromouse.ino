@@ -20,8 +20,9 @@
 #define green 5   // Green LED pin
 
 // Constants
-#define squareWidth 520 // The number of encoder counts needed to travel 1 square forwards
-#define degrees90 178   // The number of encoder counts needed to turn 90 degrees
+#define squareWidth 515
+#define degrees90 178
+
 
 // Cardinal Direction constants
 #define north 0
@@ -389,8 +390,9 @@ int frontSensor()
   int y = analogRead(FIR); // Take reflected light reading
   digitalWrite(IROn, LOW); // Turn LED back off
   Serial.print("FIR");
-  Serial.println(y - x); 
-  return (y - x); // Return the difference
+  Serial.println(y - x);
+  return (y - x -2);
+
 }
 
 int leftSensor()
@@ -405,7 +407,7 @@ int leftSensor()
   digitalWrite(IROn, LOW);
   Serial.print("LIR");
   Serial.println(y - x);
-  return (y - x);
+  return (y - x -2);
 }
 
 int rightSensor()
@@ -420,7 +422,7 @@ int rightSensor()
   digitalWrite(IROn, LOW);
   Serial.print("RIR");
   Serial.println(y - x);
-  return (y - x);
+  return (y - x - 2);
 }
 
 //Movement
@@ -892,7 +894,8 @@ void AStar( void)
   i = 0; // Reset counter
   orientation = north; // Make sure robot knows it's facing north, It should already be but again just incase 
 
-  while (1) // Loop until the while is broken
+  while (i < 35)
+
   {
     if(x == 5)
     {

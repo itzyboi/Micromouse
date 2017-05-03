@@ -1,0 +1,1102 @@
+LIR63
+LIR62
+LIR61
+LIR96
+LIR68
+LIR137
+LIR279
+LIR313
+LIR259
+LIR223
+LIR68
+RIR66
+LIR65
+RIR67
+LIR64
+RIR66
+LIR64
+RIR65
+LIR64
+RIR66
+LIR64
+RIR64
+LIR63
+RIR65
+LIR64
+RIR65
+LIR64
+RIR66
+LIR64
+RIR64
+LIR64
+RIR65
+LIR66
+RIR65
+LIR66
+RIR63
+LIR66
+RIR63
+LIR66
+RIR64
+LIR66
+RIR64
+LIR66
+RIR64
+LIR66
+RIR65
+LIR66
+RIR65
+LIR65
+RIR65
+LIR67
+RIR65
+LIR66
+RIR62
+LIR68
+RIR226
+
+FIR9
+adding front edge: 0
+bearingToChange: 0
+LIR62
+RIR67
+
+x: 0 y: 0
+visited? 1
+north wall? 1
+east wall? 0
+south wall? 0
+west wall? 0
+turns prefix: 0
+
+FIR4
+adding front edge: 0
+bearingToChange: 0
+LIR62
+RIR8
+Adding right edge
+bearing to change: 1
+bearingToChange: 1
+
+x: 1 y: 0
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 1
+west wall? 0
+turns prefix: 0
+
+FIR7
+adding front edge: 0
+bearingToChange: 0
+LIR60
+RIR7
+Adding right edge
+bearing to change: 1
+bearingToChange: 1
+
+x: 2 y: 0
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 1
+west wall? 0
+turns prefix: 0
+
+FIR117
+LIR59
+RIR60
+
+x: 3 y: 0
+visited? 1
+north wall? 0
+east wall? 0
+south wall? 1
+west wall? 0
+x(-1): 2 y(-1): 0
+turns prefix: -2
+turns postfix: -2
+
+
+x: 2 y: 0
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 1
+west wall? 0
+turns prefix: 1
+turns postfix: 1
+
+FIR104
+LIR6
+Adding left edge
+bearingToChange: 0
+RIR48
+
+x: 2 y: 1
+visited? 1
+north wall? 1
+east wall? 0
+south wall? 0
+west wall? 1
+turns prefix: 1
+turns postfix: 1
+
+FIR6
+adding front edge: 0
+bearingToChange: 0
+LIR66
+RIR61
+
+x: 3 y: 1
+visited? 1
+north wall? 1
+east wall? 0
+south wall? 1
+west wall? 0
+turns prefix: 0
+
+FIR80
+LIR3
+Adding left edge
+bearingToChange: 3
+RIR4
+Adding right edge
+bearing to change: 1
+bearingToChange: 1
+
+x: 4 y: 1
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 1
+turns prefix: -1
+turns postfix: -1
+
+FIR8
+adding front edge: 1
+bearingToChange: 1
+LIR11
+Adding left edge
+bearingToChange: 0
+RIR90
+
+x: 4 y: 2
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 0
+west wall? 1
+turns prefix: 1
+turns postfix: 1
+
+FIR48
+LIR28
+RIR5
+Adding right edge
+bearing to change: 1
+bearingToChange: 1
+
+x: 5 y: 2
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 0
+turns prefix: -1
+turns postfix: -1
+
+FIR9
+adding front edge: 1
+bearingToChange: 1
+LIR34
+RIR231
+
+x: 5 y: 3
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 0
+west wall? 1
+turns prefix: 0
+
+FIR-5
+adding front edge: 1
+bearingToChange: 1
+LIR43
+RIR8
+Adding right edge
+bearing to change: 2
+bearingToChange: 2
+
+x: 5 y: 4
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 1
+turns prefix: 0
+
+FIR196
+LIR52
+RIR77
+
+x: 5 y: 5
+visited? 1
+north wall? 0
+east wall? 0
+south wall? 0
+west wall? 1
+x(-1): 5 y(-1): 4
+turns prefix: -2
+turns postfix: -2
+
+
+x: 5 y: 4
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 1
+turns prefix: 1
+turns postfix: 1
+
+FIR171
+LIR11
+Adding left edge
+bearingToChange: 1
+RIR31
+
+x: 4 y: 4
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 0
+west wall? 0
+turns prefix: 1
+turns postfix: 1
+
+FIR189
+LIR45
+RIR8
+Adding right edge
+bearing to change: 2
+bearingToChange: 2
+
+x: 4 y: 5
+visited? 1
+north wall? 0
+east wall? 0
+south wall? 1
+west wall? 1
+turns prefix: -1
+turns postfix: -1
+
+FIR189
+LIR105
+RIR4
+Adding right edge
+bearing to change: 3
+bearingToChange: 3
+
+x: 3 y: 5
+visited? 1
+north wall? 1
+east wall? 0
+south wall? 0
+west wall? 1
+turns prefix: -1
+turns postfix: -1
+
+FIR1
+adding front edge: 3
+bearingToChange: 3
+LIR14
+Adding left edge
+bearingToChange: 2
+RIR36
+
+x: 3 y: 4
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 1
+turns prefix: 1
+turns postfix: 1
+
+FIR126
+LIR9
+Adding left edge
+bearingToChange: 1
+RIR39
+
+x: 2 y: 4
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 0
+west wall? 0
+turns prefix: 1
+turns postfix: 1
+
+FIR116
+LIR59
+RIR8
+Adding right edge
+bearing to change: 2
+bearingToChange: 2
+
+x: 2 y: 5
+visited? 1
+north wall? 0
+east wall? 0
+south wall? 1
+west wall? 1
+turns prefix: -1
+turns postfix: -1
+
+FIR108
+LIR84
+RIR6
+Adding right edge
+bearing to change: 3
+bearingToChange: 3
+
+x: 1 y: 5
+visited? 1
+north wall? 1
+east wall? 0
+south wall? 0
+west wall? 1
+turns prefix: -1
+turns postfix: -1
+
+FIR61
+LIR17
+Adding left edge
+bearingToChange: 2
+RIR38
+
+x: 1 y: 4
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 0
+turns prefix: 1
+turns postfix: 1
+
+FIR101
+LIR85
+RIR47
+
+x: 0 y: 4
+visited? 1
+north wall? 1
+east wall? 0
+south wall? 0
+west wall? 0
+x(-1): 1 y(-1): 4
+turns prefix: 2
+turns postfix: 2
+
+
+x: 1 y: 4
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 0
+x(-1): 1 y(-1): 5
+turns prefix: -1
+turns postfix: -1
+
+
+x: 1 y: 5
+visited? 1
+north wall? 1
+east wall? 0
+south wall? 0
+west wall? 1
+x(-1): 2 y(-1): 5
+turns prefix: 1
+turns postfix: 1
+
+
+x: 2 y: 5
+visited? 1
+north wall? 0
+east wall? 0
+south wall? 1
+west wall? 1
+x(-1): 2 y(-1): 4
+turns prefix: -3
+turns postfix: 1
+
+
+x: 2 y: 4
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 0
+west wall? 0
+x(-1): 3 y(-1): 4
+turns prefix: 3
+turns postfix: -1
+
+
+x: 3 y: 4
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 1
+turns prefix: -3
+turns postfix: 1
+
+FIR7
+adding front edge: 3
+bearingToChange: 3
+LIR84
+RIR44
+
+x: 3 y: 3
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 0
+west wall? 1
+turns prefix: 0
+
+FIR31
+LIR9
+Adding left edge
+bearingToChange: 2
+RIR52
+
+x: 3 y: 2
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 0
+turns prefix: 1
+turns postfix: 1
+
+FIR8
+adding front edge: 2
+bearingToChange: 2
+LIR3
+Adding left edge
+bearingToChange: 1
+RIR26
+
+x: 2 y: 2
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 1
+west wall? 0
+turns prefix: 1
+turns postfix: 1
+
+FIR261
+LIR101
+RIR38
+
+x: 2 y: 3
+visited? 1
+north wall? 0
+east wall? 0
+south wall? 0
+west wall? 1
+x(-1): 2 y(-1): 2
+turns prefix: -2
+turns postfix: -2
+
+
+x: 2 y: 2
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 1
+west wall? 0
+turns prefix: 1
+turns postfix: 1
+
+FIR40
+LIR8
+Adding left edge
+bearingToChange: 1
+RIR3
+Adding right edge
+bearing to change: 3
+bearingToChange: 3
+
+x: 1 y: 2
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 0
+west wall? 1
+turns prefix: 1
+turns postfix: 1
+
+FIR100
+LIR156
+RIR4
+Adding right edge
+bearing to change: 2
+bearingToChange: 2
+
+x: 1 y: 3
+visited? 1
+north wall? 0
+east wall? 0
+south wall? 1
+west wall? 1
+turns prefix: -1
+turns postfix: -1
+
+FIR44
+LIR55
+RIR82
+
+x: 0 y: 3
+visited? 1
+north wall? 1
+east wall? 0
+south wall? 0
+west wall? 0
+x(-1): 1 y(-1): 3
+turns prefix: 2
+turns postfix: 2
+
+
+x: 1 y: 3
+visited? 1
+north wall? 0
+east wall? 0
+south wall? 1
+west wall? 1
+x(-1): 1 y(-1): 2
+turns prefix: -3
+turns postfix: 1
+
+
+x: 1 y: 2
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 0
+west wall? 1
+turns prefix: 0
+
+FIR7
+adding front edge: 3
+bearingToChange: 3
+LIR3
+Adding left edge
+bearingToChange: 2
+RIR61
+
+x: 1 y: 1
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 1
+turns prefix: 1
+turns postfix: 1
+
+FIR86
+LIR46
+RIR102
+
+x: 0 y: 1
+visited? 1
+north wall? 1
+east wall? 0
+south wall? 0
+west wall? 0
+x(-1): 1 y(-1): 1
+turns prefix: 2
+turns postfix: 2
+
+
+x: 1 y: 1
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 1
+x(-1): 1 y(-1): 2
+turns prefix: -1
+turns postfix: -1
+
+
+x: 1 y: 2
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 0
+west wall? 1
+x(-1): 2 y(-1): 2
+turns prefix: 1
+turns postfix: 1
+
+
+x: 2 y: 2
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 1
+west wall? 0
+x(-1): 3 y(-1): 2
+turns prefix: 0
+
+
+x: 3 y: 2
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 0
+x(-1): 3 y(-1): 3
+turns prefix: -1
+turns postfix: -1
+
+
+x: 3 y: 3
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 0
+west wall? 1
+x(-1): 3 y(-1): 4
+turns prefix: 0
+
+
+x: 3 y: 4
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 1
+x(-1): 3 y(-1): 5
+turns prefix: 0
+
+
+x: 3 y: 5
+visited? 1
+north wall? 1
+east wall? 0
+south wall? 0
+west wall? 1
+x(-1): 4 y(-1): 5
+turns prefix: 1
+turns postfix: 1
+
+
+x: 4 y: 5
+visited? 1
+north wall? 0
+east wall? 0
+south wall? 1
+west wall? 1
+x(-1): 4 y(-1): 4
+turns prefix: -3
+turns postfix: 1
+
+
+x: 4 y: 4
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 0
+west wall? 0
+x(-1): 5 y(-1): 4
+turns prefix: 3
+turns postfix: -1
+
+
+x: 5 y: 4
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 1
+x(-1): 5 y(-1): 3
+turns prefix: -3
+turns postfix: 1
+
+
+x: 5 y: 3
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 0
+west wall? 1
+x(-1): 5 y(-1): 2
+turns prefix: 0
+
+
+x: 5 y: 2
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 0
+x(-1): 4 y(-1): 2
+turns prefix: 1
+turns postfix: 1
+
+
+x: 4 y: 2
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 0
+west wall? 1
+turns prefix: 1
+turns postfix: 1
+
+FIR544
+LIR58
+RIR70
+
+x: 4 y: 3
+visited? 1
+north wall? 0
+east wall? 0
+south wall? 0
+west wall? 1
+x(-1): 4 y(-1): 2
+turns prefix: -2
+turns postfix: -2
+
+
+x: 4 y: 2
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 0
+west wall? 1
+x(-1): 4 y(-1): 1
+turns prefix: 0
+
+
+x: 4 y: 1
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 1
+turns prefix: 0
+
+FIR36
+LIR75
+RIR8
+Adding right edge
+bearing to change: 0
+bearingToChange: 0
+
+x: 4 y: 0
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 0
+west wall? 0
+turns prefix: 3
+turns postfix: -1
+
+FIR75
+LIR32
+RIR9
+Adding right edge
+bearing to change: 1
+bearingToChange: 1
+
+x: 5 y: 0
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 0
+turns prefix: -1
+turns postfix: -1
+
+FIR333
+LIR53
+RIR88
+
+x: 5 y: 1
+visited? 1
+north wall? 0
+east wall? 0
+south wall? 0
+west wall? 1
+x(-1): 5 y(-1): 0
+turns prefix: -2
+turns postfix: -2
+
+
+x: 5 y: 0
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 0
+x(-1): 4 y(-1): 0
+turns prefix: 1
+turns postfix: 1
+
+
+x: 4 y: 0
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 0
+west wall? 0
+x(-1): 4 y(-1): 1
+turns prefix: 1
+turns postfix: 1
+
+
+x: 4 y: 1
+visited? 1
+north wall? 0
+east wall? 1
+south wall? 1
+west wall? 1
+x(-1): 3 y(-1): 1
+turns prefix: -1
+turns postfix: -1
+
+
+x: 3 y: 1
+visited? 1
+north wall? 1
+east wall? 0
+south wall? 1
+west wall? 0
+x(-1): 2 y(-1): 1
+turns prefix: 0
+
+
+x: 2 y: 1
+visited? 1
+north wall? 1
+east wall? 0
+south wall? 0
+west wall? 1
+x(-1): 2 y(-1): 0
+turns prefix: -1
+turns postfix: -1
+
+
+x: 2 y: 0
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 1
+west wall? 0
+x(-1): 1 y(-1): 0
+turns prefix: 1
+turns postfix: 1
+
+
+x: 1 y: 0
+visited? 1
+north wall? 1
+east wall? 1
+south wall? 1
+west wall? 0
+x(-1): 0 y(-1): 0
+turns prefix: 0
+turns prefix: 2
+turns postfix: 2
+RIR39
+LIR111
+RIR37
+LIR114
+RIR41
+LIR113
+RIR41
+LIR113
+RIR38
+LIR113
+RIR38
+LIR113
+RIR39
+LIR114
+RIR39
+LIR114
+RIR39
+LIR114
+RIR39
+LIR114
+RIR39
+LIR113
+RIR38
+LIR113
+RIR38
+LIR114
+RIR47
+LIR113
+RIR143
+Starting A*
+Initial conditions done
+Found lowest F cost: 0
+Square: x: 0 y: 0
+Scored adjacents
+Found lowest F cost: 10
+Square: x: 1 y: 0
+Scored adjacents
+Found lowest F cost: 10
+Square: x: 2 y: 0
+Scored adjacents
+Found lowest F cost: 10
+Square: x: 3 y: 0
+Scored adjacents
+Found lowest F cost: 11
+Square: x: 1 y: 1
+Scored adjacents
+Found lowest F cost: 11
+Square: x: 1 y: 2
+Scored adjacents
+Found lowest F cost: 10
+Square: x: 2 y: 2
+Scored adjacents
+Found lowest F cost: 10
+Square: x: 3 y: 2
+Scored adjacents
+Found lowest F cost: 11
+Square: x: 1 y: 3
+Scored adjacents
+Found lowest F cost: 11
+Square: x: 2 y: 1
+Scored adjacents
+Found lowest F cost: 10
+Square: x: 3 y: 1
+Scored adjacents
+Found lowest F cost: 10
+Square: x: 4 y: 1
+Scored adjacents
+Found lowest F cost: 11
+Square: x: 2 y: 3
+Scored adjacents
+Found lowest F cost: 11
+Square: x: 3 y: 3
+Scored adjacents
+Found lowest F cost: 11
+Square: x: 3 y: 4
+Scored adjacents
+Found lowest F cost: 11
+Square: x: 3 y: 5
+Scored adjacents
+Found lowest F cost: 10
+Square: x: 4 y: 5
+Scored adjacents
+Found lowest F cost: 11
+Square: x: 4 y: 0
+Scored adjacents
+Found lowest F cost: 11
+Square: x: 4 y: 2
+Scored adjacents
+Found lowest F cost: 10
+Square: x: 5 y: 2
+Scored adjacents
+Found lowest F cost: 11
+Square: x: 4 y: 3
+Scored adjacents
+Found lowest F cost: 11
+Square: x: 4 y: 4
+Scored adjacents
+Found lowest F cost: 11
+Square: x: 5 y: 3
+Scored adjacents
+Found lowest F cost: 11
+Square: x: 5 y: 4
+Scored adjacents
+Calculated Costs, finding fastest route
+# of parents goal has: 0
+Found fastest route, printing...
+X: 0 Y: 0
+X: 1 Y: 0
+X: 2 Y: 0
+X: 2 Y: 1
+X: 3 Y: 1
+X: 4 Y: 1
+X: 4 Y: 2
+X: 5 Y: 2
+X: 5 Y: 3
+X: 5 Y: 4
+X: 5 Y: 5
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+X: 0 Y: 0
+findX: 0
+findY: 0
+findX: -1
+findY: 0
+turns prefix: 0
+findX: -1
+findY: 0
+turns prefix: 0
+findX: 0
+findY: -1
+turns prefix: -1
+turns postfix: -1
+findX: -1
+findY: 0
+turns prefix: 1
+turns postfix: 1
+findX: -1
+findY: 0
+turns prefix: 0
+findX: 0
+findY: -1
+turns prefix: -1
+turns postfix: -1
+findX: -1
+findY: 0
+turns prefix: 1
+turns postfix: 1
+findX: 0
+findY: -1
+turns prefix: -1
+turns postfix: -1
+findX: 0
+findY: -1
+turns prefix: 0
+findX: 0
+findY: -1
+turns prefix: 0
+
+
+
