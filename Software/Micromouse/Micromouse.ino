@@ -887,63 +887,69 @@ void AStar( void)
   */
   int findX = 0;
   int findY = 0;
-  x = 0;
+  x = 0; // Set start point to square (0,0)
   y = 0;
-  i = 0;
-  orientation = north;
+  i = 0; // Reset counter
+  orientation = north; // Make sure robot knows it's facing north, It should already be but again just incase 
 
-  while (1)
+  while (1) // Loop until the while is broken
   {
     if(x == 5)
     {
       if(y == 5)
       {
-        break;
+        break; // If the robot is in square (5,5) the goal, break otu of the infinite loop
       }
     }
-    
-    findX = x - shortestPath[i][0];
-    findY = y - shortestPath[i][1];
+    // Only one coordinate can change every square moved, therefore to find the direction
+      // to travel the coordinated to move to are subtracted from the current coordinates.
+      // This then gives the direction to travel as follows.
+      // X1 - X2 = -1 --> move north
+      // x1 - x2 = 1  --> move south
+      // y1 - y2 = 1  --> move west
+      // y1 - y2 = -1 --> move east
+    findX = x - shortestPath[i][0]; // calculate x co-ord difference
+    findY = y - shortestPath[i][1]; // Calculate y co-ord difference
 
-    Serial.print("findX: ");
+    Serial.print("findX: "); // Print debugging code for where it is going
     Serial.println(findX);
     Serial.print("findY: ");
     Serial.println(findY);
     
-    if (findX == -1)
+    if (findX == -1) // Move north
     {
       turn(north);
       orientation = north;
       forward(1);
-      x = shortestPath[i][0];
-      y = shortestPath[i][1];
+      x = shortestPath[i][0]; // Set the next x co-ord in the shortest path list to the current square
+      y = shortestPath[i][1]; // Set the next y co-ord in the shortest path list to the current square
     }
-    else if (findX == 1)
+    else if (findX == 1) // Move south
     {
       turn(south);
       orientation = south;
       forward(1);
-      x = shortestPath[i][0];
-      y = shortestPath[i][1];
+      x = shortestPath[i][0]; // Set the next x co-ord in the shortest path list to the current square
+      y = shortestPath[i][1]; // Set the next y co-ord in the shortest path list to the current square
     }
-    else if (findY == -1)
+    else if (findY == -1) // Move east
     {
       turn(east);
       orientation = east;
       forward(1);
-      x = shortestPath[i][0];
-      y = shortestPath[i][1];
+      x = shortestPath[i][0]; // Set the next x co-ord in the shortest path list to the current square
+      y = shortestPath[i][1]; // Set the next y co-ord in the shortest path list to the current square
     }
-    else if (findY == 1)
+    else if (findY == 1) // Move west
     {
       turn(west);
       orientation = west;
       forward(1);
-      x = shortestPath[i][0];
-      y = shortestPath[i][1];
+      x = shortestPath[i][0]; // Set the next x co-ord in the shortest path list to the current square
+      y = shortestPath[i][1]; // Set the next y co-ord in the shortest path list to the current square
     }
-    else;
+    else; // It should never not have to move but this is here for redundancy
     
-    i++;
+    i++; // increment shortestPath index
   }
 }
