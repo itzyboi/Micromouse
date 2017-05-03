@@ -709,7 +709,12 @@ void antiClockwise90( int turns)
   }
   return;
 }
-
+/*
+Encoder ISR's 
+Simply adds one to each count when called.
+Comprison flag is set low in these functions so that it can be determinted if an if statement was interrupted midway through
+These can be seen in the movement functions above
+*/
 void encoderLBCounter( void )
 {
   encoderLBCount++;
@@ -737,6 +742,15 @@ void encoderRGCounter( void )
 //A*
 void AStar( void)
 {
+  /*
+  A* Pathfinding
+  A rundown of how the algorithm works can be found in the final report.
+  The A* function first computes the shortest route through the maze as descripted in the report. Once the goal has been found the 
+  cost assigning stops and the parent squares are then saved in a list from the goal back to the start. 
+  The algorithm then uses this list of coordinates and converts them into into a set of movement instructions as it moves from the start to the end
+  Once it reaches the end the robot stops and exits the Algorithm.
+  */
+  // First all of the data structures are initilized. all of the A*'s structures are local, with the exception of the shortest path vector which is global
   byte i = 0;
   byte j = 0;
 
@@ -750,6 +764,7 @@ void AStar( void)
   byte tempX = 255;
   byte tempY = 255;
 
+  // All the costs of all the squares are set to themaximum a byte allows so if accidentally added to the open list they still still not get searched
   for (i = 0; i < 6; i++)
   {
     for (j = 0; j < 6; j++)
@@ -765,7 +780,7 @@ void AStar( void)
   Serial.println("Initial conditions done");
   while (!found)
   {
-    bestX = 5;
+    bestX = 5; // Every loop set the initial lowest cost square to the goal, It is the only square that remains at maximum cost for entire duration of the search.
     bestY = 5;
     // Search open list for lowest F cost, then select it and put it in closed list
     for (i = 0; i < 6; i++)
@@ -774,7 +789,7 @@ void AStar( void)
       {
         if (openList[i][j] == 1)
         {
-          if (costs[i][j][0] < costs[bestX][bestY][0])
+          if (costs[i][j][0] < costs[bestX][bestY][0]) // if the selected square is both a lower cost than the curret selected square and in the open list, make it the current square
           {
             bestX = i;
             bestY = j;
@@ -782,14 +797,15 @@ void AStar( void)
         }
       }
     }
-    Serial.print("Found lowest F cost: ");
+    Serial.print("Found lowest F cost: "); // Print the square selected as the lowest cost as debugging info
     Serial.println(costs[bestX][bestY][0]);
     Serial.print("Square: x: ");
     Serial.print(bestX);
     Serial.print(" y: ");
     Serial.println(bestY);
-    closedList[bestX][bestY] = 1; 
-    openList[bestX][bestY] = 0;
+    
+    closedList[bestX][bestY] = 1; // add the square to the closed list so that it does not get searched again.
+    openList[bestX][bestY] = 0; // Remove the square from the open list for the same reasons
     // Calculate adjacent squares cost (if it is a valid move or not already closed), if cost is lower than it's current cost update cost and make selected square it's parent
     if ((edgeMatrix[bestX][bestY][north] == 1) && ( closedList[bestX + 1][bestY] == 0))
     {
@@ -835,7 +851,7 @@ void AStar( void)
       openList[bestX][bestY - 1] = 1; // Add square to open list
     }
     Serial.println("Scored adjacents");
-    // Check if goal is in open list and set loop condition false, goal has been found
+    // Check if goal is in open list and set loop condition false, goal has been found and the shortes route can be found
     if (openList[5][5] == 1)
     {
       found = 1;
@@ -856,7 +872,7 @@ void AStar( void)
     bestX = tempX;
     bestY = tempY;
   }
-  Serial.println("Found fastest route, printing...");
+  Serial.println("Found fastest route, printing..."); // Once the shortest path is saved to shortestPath, print it for debugging
   for(i = 0; i < 36; i++)
   {
     Serial.print("X: ");
@@ -865,7 +881,10 @@ void AStar( void)
     Serial.println(shortestPath[i][1]);
   }
 
-  // Drive to goal
+  /*
+  Drive to goal
+  The next section works exactly as the backtracking works in DFA()
+  */
   int findX = 0;
   int findY = 0;
   x = 0;
@@ -927,6 +946,4 @@ void AStar( void)
     
     i++;
   }
-
 }
-
